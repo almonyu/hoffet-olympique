@@ -970,13 +970,13 @@ function kitNumber(x, b, text, colorKey){
 function kitDigits(x, b, text){
   var H0 = 297, gap = 0.05 * H0, total = 0;
   text.split("").forEach(function(ch, i){ total += DIGIT_RECTS[+ch][2] + (i ? gap : 0); });
-  var k = b.h / H0, w = total * k, maxW = b.w * 1.7, sx = w > maxW ? maxW / w : 1;
+  var hh = b.h * 0.85, k = hh / H0, w = total * k, maxW = b.w * 1.5, sx = w > maxW ? maxW / w : 1;
   var cx = b.x + b.w / 2 - (w * sx) / 2;
   text.split("").forEach(function(ch, i){
     var r = DIGIT_RECTS[+ch];
     if (i) cx += gap * k * sx;
     var dw = r[2] * k * sx, dh = r[3] * k;
-    x.drawImage(DIGIT_IMG, r[0], r[1], r[2], r[3], cx, b.y + b.h - dh, dw, dh);
+    x.drawImage(DIGIT_IMG, r[0], r[1], r[2], r[3], cx, b.y + (b.h + hh) / 2 - dh, dw, dh);
     cx += dw;
   });
 }
