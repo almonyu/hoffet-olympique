@@ -54,6 +54,12 @@ img{max-width:100%}
 .tricolor i{flex:1}
 .hero h1{margin:14px 0 0;font-weight:700;font-size:clamp(32px,5.4vw,54px);line-height:1.04;letter-spacing:-.015em;text-wrap:balance}
 .hero h1 span{color:var(--sky)}
+.hero .prices{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+.price-chip{display:inline-flex;align-items:baseline;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:6px 15px;font-size:14px;color:rgba(255,255,255,.85)}
+.price-chip b{color:#fff;font-weight:700;font-variant-numeric:tabular-nums}
+.pick .pick-price{font-weight:600;color:var(--navy);font-variant-numeric:tabular-nums;font-size:13px}
+@media (max-width:560px){.picks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}.pick{min-width:0;flex-wrap:wrap;gap:3px 9px;padding:9px 12px}.pick .pick-price{flex-basis:100%;padding-left:25px;white-space:nowrap;font-size:12.5px}}
+@media (max-width:360px){.pick .pick-price{padding-left:0}}
 .hero p{margin:14px 0 0;max-width:58ch;color:rgba(255,255,255,.82);font-size:15px}
 .stripe{display:flex;height:4px}
 .stripe i{flex:1}
@@ -313,6 +319,7 @@ footer .wrap{padding-block:18px;display:flex;justify-content:space-between;gap:1
       <div class="eyebrow"><span class="tricolor" aria-hidden="true"><i class="c-blue"></i><i class="c-white"></i><i class="c-red"></i></span><span data-i18n="eyebrow"></span></div>
       <h1>Hoffet <span>Olympique</span></h1>
       <p data-i18n="lead"></p>
+      <div class="prices" id="prices" hidden></div>
     </div>
   </div>
 </header>
@@ -744,6 +751,15 @@ function fmtMoney(v){
   var s = Number(v).toLocaleString(lang === "fr" ? "fr-FR" : "en-US", {maximumFractionDigits:2});
   return config.currency ? s + " " + config.currency : s;
 }
+/* prices at the top of the page (hidden until they are set in the sheet) */
+function renderPrices(){
+  var host = $("#prices"); host.textContent = "";
+  [["jersey", config.jersey], ["shorts", config.shorts]].forEach(function(x){
+    if (x[1] === null || x[1] === undefined) return;
+    host.appendChild(el("span", {"class":"price-chip"}, [document.createTextNode(t(x[0])), el("b", {text: fmtMoney(x[1])})]));
+  });
+  host.hidden = !host.children.length;
+}
 function hasPrices(){ return config.jersey !== null || config.shorts !== null; }
 function itemPrice(it){ return (it.jersey ? (config.jersey||0) : 0) + (it.shorts ? (config.shorts||0) : 0); }
 function payOptions(){
@@ -763,7 +779,7 @@ function applyLang(){
   $("#lang-en").setAttribute("aria-pressed", String(lang === "en"));
   if (TOUCH){ $("#stage-hint").textContent = t("hintTouch"); $(".lb-hint").textContent = t("lbHintTouch"); }
   $("#mini").setAttribute("aria-label", t("view"));
-  renderItems(); renderRecap(); renderPay(); renderViewer(); drawPrint(); renderNews();
+  renderItems(); renderRecap(); renderPay(); renderViewer(); drawPrint(); renderNews(); renderPrices();
   if (state.submitted) renderDone(lastDone);
   if (!$("#form-alert").hidden) showAlert(alertKey);
   showLastOrder();
@@ -1163,7 +1179,9 @@ function renderItems(){
         renderItems(); renderRecap(); drawPrint();
         var again = document.getElementById("pick-" + key + "-" + it.id); if (again) again.focus();
       });
-      return el("label", {"class":"pick", "for":"pick-" + key + "-" + it.id}, [cb, el("span", {"class":"box"}), document.createTextNode(label)]);
+      var pr = key === "jersey" ? config.jersey : config.shorts;
+      return el("label", {"class":"pick", "for":"pick-" + key + "-" + it.id}, [cb, el("span", {"class":"box"}), document.createTextNode(label),
+        pr !== null && pr !== undefined ? el("span", {"class":"pick-price", text: fmtMoney(pr)}) : null]);
     }
     card.appendChild(el("div", {"class":"field", id:"f-pick-" + it.id}, [
       el("div", {"class":"picks"}, [pick("jersey", t("jersey")), pick("shorts", t("shorts"))]),
@@ -1511,7 +1529,7 @@ function callServer(fn, arg, ok, fail){
   }
 }
 callServer("getConfig", null, function(c){
-  if (c && typeof c === "object"){ config = c; if (!config.pay) config.pay = {}; if (!config.contact) config.contact = {}; applyOpen(); renderRecap(); renderPay(); renderContact(); renderNews(); }
+  if (c && typeof c === "object"){ config = c; if (!config.pay) config.pay = {}; if (!config.contact) config.contact = {}; applyOpen(); renderRecap(); renderPay(); renderContact(); renderNews(); renderPrices(); renderItems(); }
 }, function(){});
 
 /* ================= Phone extras: mini preview + last order ================= */
