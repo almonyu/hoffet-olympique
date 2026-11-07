@@ -248,6 +248,16 @@ main .wrap{padding-block:32px 72px}
 .steps li.on::before{content:"✓";background:var(--navy);border-color:var(--navy);color:#fff}
 .steps li.on::after{background:var(--navy)}
 .steps li.now{font-weight:700;color:var(--navy)}
+.proof{margin:16px 0 0;padding:14px;border:1px dashed var(--line-strong);border-radius:var(--r);background:#fff;text-align:center}
+.proof-title{margin:0 0 10px!important;font-size:13.5px;color:var(--ink)}
+.proof-input{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
+.proof-btn{display:inline-block;border:1px solid var(--navy);color:var(--navy);border-radius:6px;padding:10px 16px;font-weight:600;font-size:14px;cursor:pointer;background:#fff}
+.proof-btn:hover{background:var(--navy);color:#fff}
+.proof-btn.busy{opacity:.6;pointer-events:none}
+.proof-input:focus-visible + .proof-btn{outline:2px solid var(--navy);outline-offset:2px}
+.proof-msg{margin:8px 0 0!important;font-size:13px}
+.proof-msg.ok{color:var(--ok);font-weight:600}
+.proof-msg.err{color:var(--err)}
 .wa{margin:20px 0 4px;text-align:center}
 .wa-btn{display:inline-flex;align-items:center;gap:9px;background:#1c8c4e;color:#fff;border-radius:999px;padding:11px 20px 11px 14px;font-weight:600;text-decoration:none;font-size:14.5px}
 .wa-btn:hover{background:#15703e}
@@ -576,6 +586,10 @@ var T = {
     trackNotFound:"Aucune commande trouvée avec ce numéro et ce contact.", trackFill:"Entrez le numéro de commande (ex. HO-0001) et votre téléphone ou email.",
     trackItems:"{n} article(s)", trackLink:"Suivre cette commande",
     st_received:"Commande reçue", st_paid:"Paiement reçu", st_ready:"Prête à retirer", st_done:"Remise",
+    trackCancelled:"Cette commande a été annulée. Contactez-nous si c’est une erreur.",
+    proofTitle:"Déjà payé par QR ? Envoyez la capture d’écran du paiement, nous vérifierons plus vite.", proofBtn:"Envoyer la capture du paiement",
+    proofSending:"Envoi de la capture…", proofOk:"Capture reçue ✓ Nous vérifions votre paiement.", proofErr:"La capture n’a pas pu être envoyée. Réessayez.",
+    proofSeen:"Capture du paiement reçue, en cours de vérification.",
     e_nameCut:"« {v} » fait {n} caractères : coupé à 12. Raccourcissez le nom vous-même (ex. initiale + nom) avant d’envoyer.",
     e_numberCut:"« {v} » : coupé à 2 chiffres. Les numéros vont de 0 à 99, corrigez-le avant d’envoyer.",
     a_cut:"Un nom ou un numéro trop long a été coupé : vérifiez-le avant d’envoyer.",
@@ -650,6 +664,10 @@ var T = {
     trackNotFound:"ບໍ່ພົບຄຳສັ່ງຊື້ທີ່ມີເລກ ແລະ ຂໍ້ມູນຕິດຕໍ່ນີ້.", trackFill:"ໃສ່ເລກຄຳສັ່ງຊື້ (ຕົວຢ່າງ HO-0001) ແລະ ເບີໂທ ຫຼື ອີເມວຂອງທ່ານ.",
     trackItems:"{n} ລາຍການ", trackLink:"ຕິດຕາມຄຳສັ່ງຊື້ນີ້",
     st_received:"ໄດ້ຮັບຄຳສັ່ງຊື້", st_paid:"ໄດ້ຮັບເງິນແລ້ວ", st_ready:"ພ້ອມໃຫ້ມາຮັບ", st_done:"ມອບໃຫ້ແລ້ວ",
+    trackCancelled:"ຄຳສັ່ງຊື້ນີ້ຖືກຍົກເລີກແລ້ວ. ກະລຸນາຕິດຕໍ່ພວກເຮົາ ຖ້າເປັນຄວາມຜິດພາດ.",
+    proofTitle:"ຈ່າຍຜ່ານ QR ແລ້ວບໍ? ສົ່ງຮູບໜ້າຈໍການຈ່າຍເງິນ ເພື່ອໃຫ້ພວກເຮົາກວດສອບໄດ້ໄວຂຶ້ນ.", proofBtn:"ສົ່ງຮູບການຈ່າຍເງິນ",
+    proofSending:"ກຳລັງສົ່ງຮູບ…", proofOk:"ໄດ້ຮັບຮູບແລ້ວ ✓ ພວກເຮົາກຳລັງກວດສອບການຈ່າຍເງິນ.", proofErr:"ບໍ່ສາມາດສົ່ງຮູບໄດ້. ກະລຸນາລອງໃໝ່.",
+    proofSeen:"ໄດ້ຮັບຮູບການຈ່າຍເງິນແລ້ວ, ກຳລັງກວດສອບ.",
     e_nameCut:"“{v}” ມີ {n} ຕົວອັກສອນ: ຖືກຕັດເຫຼືອ 12. ກະລຸນາຫຍໍ້ຊື່ເອງ (ເຊັ່ນ ຕົວຫຍໍ້ + ນາມສະກຸນ) ກ່ອນສົ່ງ.",
     e_numberCut:"“{v}”: ຖືກຕັດເຫຼືອ 2 ຕົວເລກ. ເບີແມ່ນແຕ່ 0 ຫາ 99, ກະລຸນາແກ້ໄຂກ່ອນສົ່ງ.",
     a_cut:"ມີຊື່ ຫຼື ເບີທີ່ຍາວເກີນ ຖືກຕັດອອກ: ກະລຸນາກວດກ່ອນສົ່ງ.",
@@ -724,6 +742,10 @@ var T = {
     trackNotFound:"No order found with this number and contact.", trackFill:"Enter the order number (e.g. HO-0001) and your phone or email.",
     trackItems:"{n} item(s)", trackLink:"Track this order",
     st_received:"Order received", st_paid:"Payment received", st_ready:"Ready for pickup", st_done:"Handed over",
+    trackCancelled:"This order was cancelled. Contact us if this is a mistake.",
+    proofTitle:"Already paid by QR? Send a screenshot of the payment so we can check it faster.", proofBtn:"Send the payment screenshot",
+    proofSending:"Sending the screenshot…", proofOk:"Screenshot received ✓ We are checking your payment.", proofErr:"The screenshot couldn’t be sent. Please try again.",
+    proofSeen:"Payment screenshot received, being checked.",
     e_nameCut:"“{v}” has {n} characters: cut to 12. Shorten the name yourself (e.g. initial + surname) before sending.",
     e_numberCut:"“{v}”: cut to 2 digits. Numbers go from 0 to 99, please fix it before sending.",
     a_cut:"A name or number that was too long has been cut: check it before sending.",
@@ -804,9 +826,48 @@ function renderTrack(res){
   if (!res.ok){ out.appendChild(el("p", {"class":"track-msg", text: t(res.code === "busy" ? "e_busy" : res.code === "net" ? "e_net" : res.code === "fill" ? "trackFill" : "trackNotFound")})); return; }
   var order = ["received", "paid", "ready", "done"], k = order.indexOf(res.status);
   out.appendChild(el("p", {"class":"track-head"}, [el("b", {text: res.ref}), document.createTextNode(" · " + t("trackItems").replace("{n}", res.items))]));
+  if (res.status === "cancelled"){ out.appendChild(el("p", {"class":"track-msg", text: t("trackCancelled")})); return; }
   out.appendChild(el("ol", {"class":"steps"}, order.map(function(st, i){
     return el("li", {"class": i < k ? "on" : i === k ? "on now" : "", "aria-current": i === k ? "step" : null, text: t("st_" + st)});
   })));
+  // not paid yet: let them send the screenshot of their transfer
+  if (res.status === "received" && hasPrices()){
+    if (res.proof) out.appendChild(el("p", {"class":"proof-msg ok", text: t("proofSeen")}));
+    else if (lastTrackContact) out.appendChild(proofBox(res.ref, lastTrackContact));
+  }
+}
+/* ---------- payment screenshot: shrunk in the browser, then sent with the order number + contact ---------- */
+var lastTrackContact = "", proofN = 0;
+function shrinkImage(file, cb){
+  var url = URL.createObjectURL(file), img = new Image();
+  img.onload = function(){
+    var k = Math.min(1, 1600 / Math.max(img.width, img.height)), c = document.createElement("canvas");
+    c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+    var x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); x.drawImage(img, 0, 0, c.width, c.height);
+    URL.revokeObjectURL(url); cb(c.toDataURL("image/jpeg", 0.82));
+  };
+  img.onerror = function(){ URL.revokeObjectURL(url); cb(null); };
+  img.src = url;
+}
+function proofBox(ref, contact){
+  var id = "proof-file-" + (++proofN);
+  var input = el("input", {type:"file", accept:"image/*", "class":"proof-input", id:id});
+  var btn = el("label", {"class":"proof-btn", "for":id, text: t("proofBtn")});
+  var msg = el("p", {"class":"proof-msg", "aria-live":"polite"});
+  input.addEventListener("change", function(){
+    var f = input.files && input.files[0];
+    if (!f) return;
+    var fail = function(){ btn.classList.remove("busy"); msg.className = "proof-msg err"; msg.textContent = t("proofErr"); input.value = ""; };
+    btn.classList.add("busy"); msg.className = "proof-msg"; msg.textContent = t("proofSending");
+    shrinkImage(f, function(data){
+      if (!data) return fail();
+      callServer("sendProof", {ref:ref, contact:contact, image:data}, function(res){
+        if (!res || !res.ok) return fail();
+        btn.classList.remove("busy"); btn.hidden = true; msg.className = "proof-msg ok"; msg.textContent = t("proofOk");
+      }, fail);
+    });
+  });
+  return el("div", {"class":"proof"}, [el("p", {"class":"proof-title", text: t("proofTitle")}), input, btn, msg]);
 }
 $("#track-form").addEventListener("submit", function(ev){
   ev.preventDefault();
@@ -817,6 +878,7 @@ $("#track-form").addEventListener("submit", function(ev){
   if (!/^HO-\d{4}$/.test(ref) || !c){ renderTrack({ok:false, code:"fill"}); return; }
   var btn = $("#track-btn"); btn.disabled = true; btn.textContent = t("trackLoading");
   var done = function(){ btn.disabled = false; btn.textContent = t("trackBtn"); };
+  lastTrackContact = c;
   callServer("getStatus", {ref:ref, contact:c}, function(res){ done(); renderTrack(res || {ok:false}); }, function(){ done(); renderTrack({ok:false, code:"net"}); });
 });
 
@@ -1663,6 +1725,7 @@ function renderDone(d){
       [[t("payWhere"), p.cash]].forEach(function(r){ if (r[1]){ dl.appendChild(el("dt", {text: r[0]})); dl.appendChild(el("dd", {text: r[1]})); } });
     }
     box.appendChild(dl);
+    if (d.payMethod === "qr" && d.contact) box.appendChild(proofBox(d.ref, d.contact));
     host.appendChild(box);
   } else {
     host.appendChild(el("p", {text: t("payLater")}));
@@ -1704,17 +1767,19 @@ function applyOpen(){
 }
 
 /* ================= Server bridge ================= */
+var ACTIONS = {getStatus:"status", sendProof:"proof"};
 function callServer(fn, arg, ok, fail){
   if (LIVE){
     google.script.run.withSuccessHandler(ok).withFailureHandler(fail)[fn](arg);
   } else if (REMOTE){
     var req = fn === "getConfig"
       ? fetch(API_URL + "?action=config", {cache:"no-store"})
-      : fetch(API_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify(fn === "getStatus" ? Object.assign({action:"status"}, arg) : arg)});
+      : fetch(API_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify(ACTIONS[fn] ? Object.assign({action: ACTIONS[fn]}, arg) : arg)});
     req.then(function(r){ if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }).then(ok, fail);
   } else if (DEMO){
     setTimeout(function(){
       if (fn === "getStatus") ok({ok:true, ref:arg.ref, status:"paid", items:1});
+      else if (fn === "sendProof") ok({ok:true});
       else if (fn === "getConfig") ok({open:true, jersey:null, shorts:null, currency:"LAK", pay:{bank:"LDB Bank (LAO QR / LAPNet)", accountName:"SIMON MAUDCE DOUSSANTOUSE", accountNumber:"", phone:"58953850", cash:""}});
       else ok({ok:true, ref:"HO-0001"});
     }, 300);
