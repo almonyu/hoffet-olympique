@@ -471,6 +471,7 @@ var T = {
     lastOrder:"Votre dernière commande : {ref}", lastOrderBtn:"Revoir la confirmation",
     e_nameChars:"Utilisez uniquement des lettres latines (A–Z), des espaces, des tirets ou des apostrophes.", a_nameChars:"Le nom au dos doit être écrit en lettres latines (A–Z).",
     e_busy:"Beaucoup de commandes arrivent en même temps. Réessayez dans une minute.",
+    retrying:"Beaucoup de commandes, nouvel essai…",
     lbHint:"Pincez ou utilisez la molette pour zoomer · glissez pour vous déplacer · double-clic pour agrandir",
     printTitle:"Votre flocage", printEmpty:"Le nom et le numéro que vous saisissez s’affichent ici, dans le style du maillot.",
     printOf:"Article {n} · maillot {c}",
@@ -529,6 +530,7 @@ var T = {
     lastOrder:"Your last order: {ref}", lastOrderBtn:"See the confirmation again",
     e_nameChars:"Use Latin letters only (A–Z), spaces, hyphens or apostrophes.", a_nameChars:"The name on the back must be written in Latin letters (A–Z).",
     e_busy:"Many orders are arriving at the same time. Please try again in a minute.",
+    retrying:"Busy, trying again…",
     lbHint:"Pinch or scroll to zoom · drag to move around · double-click to enlarge",
     printTitle:"Your printing", printEmpty:"The name and number you type appear here, in the jersey’s style.",
     printOf:"Item {n} · {c} jersey",
@@ -1260,14 +1262,24 @@ $("#order-form").addEventListener("submit", function(ev){
   state.sending = true;
   var btn = $("#submit"); btn.disabled = true; btn.textContent = t("sending");
   function finish(){ state.sending = false; btn.disabled = false; btn.textContent = t("submit"); }
-  callServer("submitOrder", payload, function(res){
+  // when many orders arrive at once the server may answer "busy": try again by itself (same key, so never a double order)
+  var attempt = 0;
+  function send(){ callServer("submitOrder", payload, onResult, function(){
+    finish(); alertBox.textContent = t("e_net"); alertBox.hidden = false;
+  }); }
+  function onResult(res){
+    if (res && !res.ok && (res.code === "busy" || res.code === "error") && attempt < 3){
+      attempt++; btn.textContent = t("retrying");
+      setTimeout(send, 4000 * attempt + Math.random() * 3000);
+      return;
+    }
     finish();
     if (res && res.ok){
       lastDone = { ref: res.ref, buyer: payload.buyer, payMethod: payload.payMethod, items: JSON.parse(JSON.stringify(state.items)) };
       state.submitted = true; state.orderKey = null;
       try { localStorage.setItem("ho-last", JSON.stringify(lastDone)); } catch(e) {}
       renderDone(lastDone); updateMini();
-    } else if (res && res.code === "busy"){
+    } else if (res && (res.code === "busy" || res.code === "error")){
       alertBox.textContent = t("e_busy"); alertBox.hidden = false;
     } else if (res && res.code === "closed"){
       alertBox.textContent = t("e_closed"); alertBox.hidden = false;
@@ -1275,9 +1287,8 @@ $("#order-form").addEventListener("submit", function(ev){
     } else {
       alertBox.textContent = t("e_fix"); alertBox.hidden = false;
     }
-  }, function(){
-    finish(); alertBox.textContent = t("e_net"); alertBox.hidden = false;
-  });
+  }
+  send();
 });
 function renderDone(d){
   if (!d) return;
