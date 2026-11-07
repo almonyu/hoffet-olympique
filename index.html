@@ -217,6 +217,9 @@ main .wrap{padding-block:32px 72px}
 .contact-list a:hover{border-color:var(--navy);color:var(--navy)}
 .contact-list .ico{width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;flex:none}
 .contact-list .ico svg{width:15px;height:15px}
+.contact-list .lbl{display:flex;flex-direction:column;align-items:flex-start;text-align:left;line-height:1.25}
+.contact-list .lbl small{font-size:11.5px;font-weight:500;color:var(--muted);letter-spacing:.02em}
+.contact-list a:hover .lbl small{color:inherit}
 @media (max-width:460px){.contact-list{flex-direction:column;align-items:stretch}.contact-list a{justify-content:flex-start}}
 .hp{position:absolute!important;left:-10000px!important;width:1px;height:1px;overflow:hidden}
 .last-order{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px;padding:12px 14px;border:1px solid var(--line);border-left:3px solid var(--navy);border-radius:var(--r);background:var(--field);font-size:13.5px}
@@ -247,6 +250,26 @@ main .wrap{padding-block:32px 72px}
 footer{border-top:1px solid var(--line);color:var(--muted);font-size:12.5px}
 footer .wrap{padding-block:18px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
 :focus-visible{outline:2px solid rgba(42,72,107,.5);outline-offset:2px}
+/* ---------- Screen sizes ---------- */
+/* tablets and landscape phones: the jersey no longer fills the whole screen */
+@media (max-width:920px){.viewer{width:100%;max-width:min(560px,70vh);max-width:min(560px,70svh);margin-inline:auto}}
+@media (max-width:920px) and (orientation:landscape){.viewer{max-width:min(560px,62vh);max-width:min(560px,62svh)}}
+/* small phones (320-380 px) */
+@media (max-width:380px){
+  .wrap{padding-left:max(14px,env(safe-area-inset-left,0px));padding-right:max(14px,env(safe-area-inset-right,0px))}
+  .eyebrow{font-size:11px;letter-spacing:.12em;gap:9px}
+  .seg button{padding:8px 11px}
+  .sec{padding:18px 12px}
+  .item{padding:12px}
+  .sizes .sz span{font-size:11px;letter-spacing:-.03em}
+  .thumbs{gap:6px}
+  .thumb span{font-size:9.5px;letter-spacing:.03em}
+}
+/* big monitors: everything scales up instead of a narrow column in the middle */
+@media (min-width:1600px){.band .wrap,main,.contact,footer{zoom:1.15}}
+@media (min-width:1900px){.band .wrap,main,.contact,footer{zoom:1.3}}
+@media (min-width:2300px){.band .wrap,main,.contact,footer{zoom:1.5}}
+@media (min-width:3200px){.band .wrap,main,.contact,footer{zoom:2}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
@@ -544,7 +567,9 @@ var ICONS = {
 function renderContact(){
   var c = config.contact || {}, host = $("#contact-list"), links = [];
   var phone = String(c.phone || "").trim(), email = String(c.email || "").trim(), ig = String(c.instagram || "").trim();
-  [phone, String(c.phone2 || "").trim()].forEach(function(ph){ if (ph) links.push({ico:"phone", text:ph, href:"tel:" + ph.replace(/[^\d+]/g, "")}); });
+  [[phone, c.phoneName], [String(c.phone2 || "").trim(), c.phone2Name]].forEach(function(p){
+    if (p[0]) links.push({ico:"phone", text:p[0], label:String(p[1] || "").trim().slice(0, 40), href:"tel:" + p[0].replace(/[^\d+]/g, "")});
+  });
   if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) links.push({ico:"email", text:email, href:"mailto:" + email});
   if (ig){
     var handle = ig.replace(/^https?:\/\/(www\.)?instagram\.com\//i, "").replace(/^@/, "").replace(/[\/?#].*$/, "");
@@ -555,7 +580,11 @@ function renderContact(){
     var a = el("a", {href:l.href}), i = el("span", {"class":"ico"});
     i.innerHTML = ICONS[l.ico];
     if (l.ext){ a.target = "_blank"; a.rel = "noopener"; }
-    a.append(i, el("span", {text:l.text}));
+    var txt = el("span", {"class":"lbl"});
+    if (l.label) txt.appendChild(el("small", {text:l.label}));
+    txt.appendChild(el("span", {text:l.text}));
+    if (l.label) a.setAttribute("aria-label", l.label + " : " + l.text);
+    a.append(i, txt);
     host.appendChild(a);
   });
   $("#contact").hidden = !links.length;
@@ -711,14 +740,14 @@ $("#btn-turn").addEventListener("click", function(){ spinTo(view.side === "front
   var stage = $("#stage"), lens = $("#lens"), Z = 2.4, RL = 60;
   stage.addEventListener("mousemove", function(e){
     if (e.target.closest(".stage-tools")){ lens.classList.remove("on"); return; }
-    var card = $("#card").getBoundingClientRect(), r = stage.getBoundingClientRect();
-    var x = e.clientX - card.left, y = e.clientY - card.top;
-    if (x < 0 || y < 0 || x > card.width || y > card.height){ lens.classList.remove("on"); return; }
+    var card = $("#card").getBoundingClientRect(), r = stage.getBoundingClientRect(), z = stage.currentCSSZoom || 1;
+    var x = (e.clientX - card.left) / z, y = (e.clientY - card.top) / z, cw = card.width / z, ch = card.height / z;
+    if (x < 0 || y < 0 || x > cw || y > ch){ lens.classList.remove("on"); return; }
     hideHint();
     lens.classList.add("on");
-    lens.style.left = (e.clientX - r.left - RL) + "px"; lens.style.top = (e.clientY - r.top - RL) + "px";
+    lens.style.left = ((e.clientX - r.left) / z - RL) + "px"; lens.style.top = ((e.clientY - r.top) / z - RL) + "px";
     lens.style.backgroundImage = "url(" + imgUrl(view.color, view.side) + ")";
-    lens.style.backgroundSize = (card.width * Z) + "px " + (card.height * Z) + "px";
+    lens.style.backgroundSize = (cw * Z) + "px " + (ch * Z) + "px";
     lens.style.backgroundPosition = (-(x * Z - RL)) + "px " + (-(y * Z - RL)) + "px";
   });
   stage.addEventListener("mouseleave", function(){ lens.classList.remove("on"); });
