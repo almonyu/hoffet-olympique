@@ -10,8 +10,8 @@
 <meta property="og:site_name" content="Hoffet Olympique">
 <meta property="og:title" content="Hoffet Olympique – Commande de maillots">
 <meta property="og:description" content="Choisissez votre maillot et votre short, avec votre nom et votre numéro au dos.">
-<meta property="og:url" content="https://almonyu.github.io/hoffet-olympique/">
-<meta property="og:image" content="https://almonyu.github.io/hoffet-olympique/og.jpg">
+<meta property="og:url" content="https://hoffet-olympique.github.io/">
+<meta property="og:image" content="https://hoffet-olympique.github.io/og.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
@@ -544,7 +544,7 @@ var ICONS = {
 function renderContact(){
   var c = config.contact || {}, host = $("#contact-list"), links = [];
   var phone = String(c.phone || "").trim(), email = String(c.email || "").trim(), ig = String(c.instagram || "").trim();
-  if (phone) links.push({ico:"phone", text:phone, href:"tel:" + phone.replace(/[^\d+]/g, "")});
+  [phone, String(c.phone2 || "").trim()].forEach(function(ph){ if (ph) links.push({ico:"phone", text:ph, href:"tel:" + ph.replace(/[^\d+]/g, "")}); });
   if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) links.push({ico:"email", text:email, href:"mailto:" + email});
   if (ig){
     var handle = ig.replace(/^https?:\/\/(www\.)?instagram\.com\//i, "").replace(/^@/, "").replace(/[\/?#].*$/, "");
