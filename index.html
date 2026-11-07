@@ -18,14 +18,14 @@
 <meta name="theme-color" content="#2a486b">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Oswald:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Oswald:wght@500;600;700&family=Noto+Sans+Lao:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: slim navy club header, then a fitting room — jersey photos left (sticky on desktop), order sheet right, all on white. */
 :root{
   --navy:#2a486b; --navy-ink:#1e3552; --sky:#9cc4ee; --flag-blue:#3a6aa6; --red:#971f1e;
   --paper:#ffffff; --surface:#ffffff; --ink:#18212c; --muted:#5f6b7a; --line:#e3e7ed; --line-strong:#cfd6df;
   --field:#fafbfc; --tint:#f4f6f9; --err:#b3261e; --ok:#1f7a4d;
-  --f-body:"Montserrat",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+  --f-body:"Montserrat","Noto Sans Lao",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
   --f-kit:"Oswald","Arial Narrow",Impact,sans-serif;
   --r:8px;
 }
@@ -60,6 +60,7 @@ img{max-width:100%}
 .pick .pick-price{font-weight:600;color:var(--navy);font-variant-numeric:tabular-nums;font-size:13px}
 @media (max-width:560px){.picks{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));width:100%}.pick{min-width:0;flex-wrap:wrap;gap:3px 9px;padding:9px 12px}.pick .pick-price{flex-basis:100%;padding-left:25px;white-space:nowrap;font-size:12.5px}}
 @media (max-width:360px){.pick .pick-price{padding-left:0}}
+.hero .deadline{margin-top:12px;font-weight:600;color:#fff;font-size:14px}
 .hero p{margin:14px 0 0;max-width:58ch;color:rgba(255,255,255,.82);font-size:15px}
 .stripe{display:flex;height:4px}
 .stripe i{flex:1}
@@ -227,6 +228,33 @@ main .wrap{padding-block:32px 72px}
 .news-badge{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--red);border-radius:4px;padding:2px 6px}
 .news-item p{margin:4px 0 0;font-size:14px;line-height:1.5;white-space:pre-line;overflow-wrap:anywhere;color:var(--ink)}
 .news-item p a{color:var(--navy);text-decoration:underline}
+.track{border-top:1px solid var(--line);padding:34px 0 30px;text-align:center}
+.track h2{margin:0 0 6px;font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.track-intro{margin:0 auto 16px;max-width:52ch;font-size:14px;color:var(--muted)}
+.track-form{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr) auto;gap:10px;align-items:end;max-width:680px;margin:0 auto;text-align:left}
+.track-form label span{display:block;font-size:12.5px;font-weight:600;margin-bottom:5px}
+.track-form .cta{margin:0;white-space:nowrap}
+.track-form .cta:disabled{opacity:.6;cursor:wait}
+@media (max-width:620px){.track-form{grid-template-columns:minmax(0,1fr)}.track-form .cta{width:100%}}
+.track-msg{margin:16px auto 0;font-size:14px;color:var(--err)}
+.track-head{margin:18px 0 0;font-size:14px}
+.track-head b{font-family:var(--f-kit);font-size:18px;letter-spacing:.06em;color:var(--navy);margin-right:4px}
+.steps{list-style:none;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;padding:0;margin:14px auto 0;max-width:680px;counter-reset:st}
+.steps li{position:relative;padding-top:34px;font-size:12.5px;line-height:1.3;color:var(--muted);counter-increment:st}
+.steps li::before{content:counter(st);position:absolute;top:0;left:50%;transform:translateX(-50%);width:26px;height:26px;border-radius:50%;border:2px solid var(--line-strong);background:#fff;display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--muted);box-sizing:border-box}
+.steps li::after{content:"";position:absolute;top:12px;left:calc(-50% + 16px);right:calc(50% + 16px);height:2px;background:var(--line-strong)}
+.steps li:first-child::after{display:none}
+.steps li.on{color:var(--ink)}
+.steps li.on::before{content:"✓";background:var(--navy);border-color:var(--navy);color:#fff}
+.steps li.on::after{background:var(--navy)}
+.steps li.now{font-weight:700;color:var(--navy)}
+.wa{margin:20px 0 4px;text-align:center}
+.wa-btn{display:inline-flex;align-items:center;gap:9px;background:#1c8c4e;color:#fff;border-radius:999px;padding:11px 20px 11px 14px;font-weight:600;text-decoration:none;font-size:14.5px}
+.wa-btn:hover{background:#15703e}
+.wa-btn .ico svg{width:20px;height:20px;display:block}
+.wa p{margin:8px 0 0;font-size:12.5px;color:var(--muted)}
+.track-link{margin:14px 0 0;text-align:center;font-size:14px}
+.track-link a{color:var(--navy);font-weight:600}
 .contact{border-top:1px solid var(--line);padding:34px 0 30px;text-align:center}
 .contact h2{margin:0 0 16px;font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .contact-list{display:flex;justify-content:center;flex-wrap:wrap;gap:10px}
@@ -295,10 +323,10 @@ footer .wrap{padding-block:18px;display:flex;justify-content:space-between;gap:1
   .thumb span{font-size:9.5px;letter-spacing:.03em}
 }
 /* big monitors: everything scales up instead of a narrow column in the middle */
-@media (min-width:1600px){.band .wrap,main,.contact,footer{zoom:1.15}}
-@media (min-width:1900px){.band .wrap,main,.contact,footer{zoom:1.3}}
-@media (min-width:2300px){.band .wrap,main,.contact,footer{zoom:1.5}}
-@media (min-width:3200px){.band .wrap,main,.contact,footer{zoom:2}}
+@media (min-width:1600px){.band .wrap,main,.track,.contact,footer{zoom:1.15}}
+@media (min-width:1900px){.band .wrap,main,.track,.contact,footer{zoom:1.3}}
+@media (min-width:2300px){.band .wrap,main,.track,.contact,footer{zoom:1.5}}
+@media (min-width:3200px){.band .wrap,main,.track,.contact,footer{zoom:2}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
 </head>
@@ -313,6 +341,7 @@ footer .wrap{padding-block:18px;display:flex;justify-content:space-between;gap:1
       <div class="lang" role="group" aria-label="Langue / Language">
         <button type="button" id="lang-fr" data-lang="fr" aria-pressed="true">FR</button>
         <button type="button" id="lang-en" data-lang="en" aria-pressed="false">EN</button>
+        <button type="button" id="lang-lo" data-lang="lo" aria-pressed="false" lang="lo">ລາວ</button>
       </div>
     </div>
     <div class="hero">
@@ -320,6 +349,7 @@ footer .wrap{padding-block:18px;display:flex;justify-content:space-between;gap:1
       <h1>Hoffet <span>Olympique</span></h1>
       <p data-i18n="lead"></p>
       <div class="prices" id="prices" hidden></div>
+      <p class="deadline" id="deadline" hidden></p>
     </div>
   </div>
 </header>
@@ -447,6 +477,19 @@ footer .wrap{padding-block:18px;display:flex;justify-content:space-between;gap:1
   <div class="lb-hint" data-i18n="lbHint"></div>
 </div>
 
+<section class="track" id="track" aria-labelledby="h-track">
+  <div class="wrap">
+    <h2 id="h-track" data-i18n="trackTitle"></h2>
+    <p class="track-intro" data-i18n="trackIntro"></p>
+    <form class="track-form" id="track-form" novalidate>
+      <label><span data-i18n="trackRef"></span><input class="input" id="track-ref" type="text" maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="HO-0001"></label>
+      <label><span data-i18n="trackContact"></span><input class="input" id="track-contact" type="text" maxlength="80" autocomplete="tel" data-i18n-ph="telPh"></label>
+      <button type="submit" class="cta" id="track-btn" data-i18n="trackBtn"></button>
+    </form>
+    <div id="track-result" aria-live="polite"></div>
+  </div>
+</section>
+
 <section class="contact" id="contact" hidden aria-labelledby="h-contact">
   <div class="wrap">
     <h2 id="h-contact" data-i18n="contactTitle"></h2>
@@ -520,11 +563,19 @@ var T = {
     payHow:"Comment allez-vous payer ?", payQr:"LAO QR / BCEL OnePay", payCash:"Espèces à l’école",
     e_buyer:"Indiquez le nom de la personne qui commande.",
     telLabel:"Téléphone / WhatsApp ou email", telPh:"ex. 020 12 34 56 78 ou nom@email.com",
-    telHelp:"Pour vous contacter au sujet de votre commande.",
+    telHelp:"Uniquement pour vous contacter au sujet de votre commande, jamais partagé.",
     e_tel:"Indiquez un numéro de téléphone (8 chiffres minimum) ou une adresse email valide.",
     refImportant:"Important : écrivez votre numéro de commande dans la description du paiement.",
     refImportantCash:"Important : donnez votre numéro de commande quand vous payez.",
     copy:"Copier", copied:"Copié ✓",
+    deadline:"Commandes jusqu’au {d}",
+    waBtn:"Envoyer ma commande sur WhatsApp", waHelp:"Vous gardez une copie dans la discussion, et l’équipe est prévenue.",
+    waHello:"Bonjour, voici ma commande Hoffet Olympique :", waContact:"Contact",
+    trackTitle:"Suivre ma commande", trackIntro:"Entrez votre numéro de commande et le téléphone ou l’email donné en commandant.",
+    trackRef:"N° de commande", trackContact:"Téléphone ou email", trackBtn:"Voir le statut", trackLoading:"Recherche…",
+    trackNotFound:"Aucune commande trouvée avec ce numéro et ce contact.", trackFill:"Entrez le numéro de commande (ex. HO-0001) et votre téléphone ou email.",
+    trackItems:"{n} article(s)", trackLink:"Suivre cette commande",
+    st_received:"Commande reçue", st_paid:"Paiement reçu", st_ready:"Prête à retirer", st_done:"Remise",
     e_nameCut:"« {v} » fait {n} caractères : coupé à 12. Raccourcissez le nom vous-même (ex. initiale + nom) avant d’envoyer.",
     e_numberCut:"« {v} » : coupé à 2 chiffres. Les numéros vont de 0 à 99, corrigez-le avant d’envoyer.",
     a_cut:"Un nom ou un numéro trop long a été coupé : vérifiez-le avant d’envoyer.",
@@ -553,6 +604,80 @@ var T = {
     closedTitle:"Commandes fermées", closedBody:"Les commandes de tenues ne sont pas ouvertes pour le moment. Revenez plus tard.",
     footerNote:"Visuels officiels du maillot. Les couleurs réelles peuvent légèrement varier.",
     lineJersey:"Maillot", lineShorts:"Short", altFront:"Maillot {c}, vue de face", altBack:"Maillot {c}, vue de dos"
+  },
+  lo: {
+    previewBanner:"ຕົວຢ່າງໃນເຄື່ອງ: ຄຳສັ່ງຊື້ທີ່ສົ່ງຢູ່ນີ້ ບໍ່ຖືກບັນທຶກ. ກະລຸນາໃຊ້ລິ້ງເວັບໄຊທີ່ເຜີຍແຜ່.",
+    eyebrow:"ບານເຕະ · ລະດູການ 2026–2027",
+    lead:"ສັ່ງຊື້ຊຸດກິລາທາງການຂອງທີມ ໂຮງຮຽນຝຣັ່ງສາກົນວຽງຈັນ. ເລືອກສີ, ຂະໜາດ, ຊື່ ແລະ ເບີ, ແລ້ວສົ່ງຄຳສັ່ງຊື້ຂອງທ່ານ.",
+    pink:"ບົວ", black:"ດຳ", front:"ດ້ານໜ້າ", back:"ດ້ານຫຼັງ", zoom:"ຂະຫຍາຍລາຍລະອຽດ", close:"ປິດ",
+    hint:"ວາງເມົ້າເພື່ອເບິ່ງໃກ້ · ຄລິກເພື່ອຂະຫຍາຍ", turn:"ປີ້ນ",
+    contactTitle:"ຕິດຕໍ່ພວກເຮົາ",
+    newsTitle:"ຂ່າວສານ", newsImportant:"ສຳຄັນ",
+    hintTouch:"ແຕະເສື້ອເພື່ອເບິ່ງເຕັມຈໍ", lbHintTouch:"ໃຊ້ສອງນິ້ວເພື່ອຂະຫຍາຍ · ແຕະສອງເທື່ອເພື່ອຂະຫຍາຍ",
+    lastOrder:"ຄຳສັ່ງຊື້ຫຼ້າສຸດຂອງທ່ານ: {ref}", lastOrderBtn:"ເບິ່ງການຢືນຢັນອີກຄັ້ງ",
+    e_nameChars:"ກະລຸນາໃຊ້ຕົວອັກສອນລາແຕັງ (A–Z), ຍະຫວ່າງ, ຂີດ ຫຼື ເຄື່ອງໝາຍ ' ເທົ່ານັ້ນ.", a_nameChars:"ຊື່ຫຼັງເສື້ອຕ້ອງຂຽນເປັນຕົວອັກສອນລາແຕັງ (A–Z).",
+    e_busy:"ມີຄຳສັ່ງຊື້ເຂົ້າມາພ້ອມກັນຫຼາຍ. ກະລຸນາລອງໃໝ່ໃນອີກໜຶ່ງນາທີ.",
+    retrying:"ລະບົບຫຍຸ້ງ, ກຳລັງລອງໃໝ່…",
+    lbHint:"ໃຊ້ສອງນິ້ວ ຫຼື ລໍ້ເມົ້າເພື່ອຂະຫຍາຍ · ລາກເພື່ອເລື່ອນ · ຄລິກສອງເທື່ອເພື່ອຂະຫຍາຍ",
+    printTitle:"ການພິມຂອງທ່ານ", printEmpty:"ຊື່ ແລະ ເບີທີ່ທ່ານພິມ ຈະສະແດງຢູ່ນີ້ ຕາມແບບຂອງເສື້ອ.",
+    printOf:"ລາຍການ {n} · ເສື້ອສີ{c}",
+    jersey:"ເສື້ອ", shorts:"ໂສ້ງຂາສັ້ນ",
+    shortsSoon:"ແບບຍັງບໍ່ທັນສຳເລັດ. ສີທີ່ວາງແຜນໄວ້: ຂາວ ຫຼື ດຳ.",
+    step1:"ໃຜເປັນຜູ້ສັ່ງຊື້?", buyerLabel:"ຊື່ ແລະ ນາມສະກຸນ ຂອງຜູ້ສັ່ງຊື້", buyerPh:"ຕົວຢ່າງ: ສົມພອນ ແກ້ວມະນີ",
+    step2:"ລາຍການຂອງທ່ານ", step2Hint:"ໜຶ່ງລາຍການຕໍ່ໜຶ່ງຊຸດ. ໝາຍເອົາເສື້ອ, ໂສ້ງ ຫຼື ທັງສອງ.",
+    item:"ລາຍການ", remove:"ລຶບອອກ", view:"ເບິ່ງເສື້ອ",
+    jColor:"ສີເສື້ອ", jSize:"ຂະໜາດເສື້ອ", backName:"ຊື່ຫຼັງເສື້ອ (ອັກສອນລາແຕັງ)", backNamePh:"ຕົວຢ່າງ: SOMPHONE",
+    number:"ເບີ", numberPh:"ຕົວຢ່າງ: 10", numberHelp:"ສູງສຸດ 2 ຕົວເລກ", nameHelp:"ສູງສຸດ 12 ຕົວອັກສອນ (ລວມຍະຫວ່າງ)",
+    sColor:"ສີໂສ້ງ", sSize:"ຂະໜາດໂສ້ງ",
+    colors:{pink:"ບົວ", black:"ດຳ", white:"ຂາວ"},
+    add:"+ ເພີ່ມລາຍການອື່ນ",
+    step3:"ສະຫຼຸບ", submit:"ສົ່ງຄຳສັ່ງຊື້", sending:"ກຳລັງສົ່ງ…",
+    nothing:"ຍັງບໍ່ມີລາຍການ.",
+    total:"ລວມ", pricesSoon:"ລາຄາຈະແຈ້ງໃຫ້ຊາບໃນໄວໆນີ້. ຂໍ້ມູນການຈ່າຍເງິນຈະສົ່ງໃຫ້ທ່ານໃນເວລານັ້ນ.",
+    payHow:"ທ່ານຈະຈ່າຍເງິນແນວໃດ?", payQr:"LAO QR / BCEL OnePay", payCash:"ເງິນສົດທີ່ໂຮງຮຽນ",
+    e_buyer:"ກະລຸນາໃສ່ຊື່ຂອງຜູ້ສັ່ງຊື້.",
+    telLabel:"ເບີໂທ / WhatsApp ຫຼື ອີເມວ", telPh:"ຕົວຢ່າງ: 020 12 34 56 78 ຫຼື name@email.com",
+    telHelp:"ໃຊ້ເພື່ອຕິດຕໍ່ທ່ານກ່ຽວກັບຄຳສັ່ງຊື້ນີ້ເທົ່ານັ້ນ, ບໍ່ແບ່ງປັນໃຫ້ຜູ້ອື່ນ.",
+    e_tel:"ກະລຸນາໃສ່ເບີໂທ (ຢ່າງໜ້ອຍ 8 ຕົວເລກ) ຫຼື ອີເມວທີ່ຖືກຕ້ອງ.",
+    refImportant:"ສຳຄັນ: ຂຽນເລກຄຳສັ່ງຊື້ຂອງທ່ານໃນຄຳອະທິບາຍການໂອນເງິນ.",
+    refImportantCash:"ສຳຄັນ: ບອກເລກຄຳສັ່ງຊື້ຂອງທ່ານເວລາຈ່າຍເງິນ.",
+    copy:"ສຳເນົາ", copied:"ສຳເນົາແລ້ວ ✓",
+    deadline:"ສັ່ງຊື້ໄດ້ຮອດວັນທີ {d}",
+    waBtn:"ສົ່ງຄຳສັ່ງຊື້ທາງ WhatsApp", waHelp:"ທ່ານຈະມີສຳເນົາໄວ້ໃນການສົນທະນາ ແລະ ທີມງານຈະໄດ້ຮັບແຈ້ງ.",
+    waHello:"ສະບາຍດີ, ນີ້ແມ່ນຄຳສັ່ງຊື້ Hoffet Olympique ຂອງຂ້ອຍ:", waContact:"ຕິດຕໍ່",
+    trackTitle:"ຕິດຕາມຄຳສັ່ງຊື້", trackIntro:"ໃສ່ເລກຄຳສັ່ງຊື້ ແລະ ເບີໂທ ຫຼື ອີເມວທີ່ໃຊ້ຕອນສັ່ງຊື້.",
+    trackRef:"ເລກຄຳສັ່ງຊື້", trackContact:"ເບີໂທ ຫຼື ອີເມວ", trackBtn:"ເບິ່ງສະຖານະ", trackLoading:"ກຳລັງຊອກຫາ…",
+    trackNotFound:"ບໍ່ພົບຄຳສັ່ງຊື້ທີ່ມີເລກ ແລະ ຂໍ້ມູນຕິດຕໍ່ນີ້.", trackFill:"ໃສ່ເລກຄຳສັ່ງຊື້ (ຕົວຢ່າງ HO-0001) ແລະ ເບີໂທ ຫຼື ອີເມວຂອງທ່ານ.",
+    trackItems:"{n} ລາຍການ", trackLink:"ຕິດຕາມຄຳສັ່ງຊື້ນີ້",
+    st_received:"ໄດ້ຮັບຄຳສັ່ງຊື້", st_paid:"ໄດ້ຮັບເງິນແລ້ວ", st_ready:"ພ້ອມໃຫ້ມາຮັບ", st_done:"ມອບໃຫ້ແລ້ວ",
+    e_nameCut:"“{v}” ມີ {n} ຕົວອັກສອນ: ຖືກຕັດເຫຼືອ 12. ກະລຸນາຫຍໍ້ຊື່ເອງ (ເຊັ່ນ ຕົວຫຍໍ້ + ນາມສະກຸນ) ກ່ອນສົ່ງ.",
+    e_numberCut:"“{v}”: ຖືກຕັດເຫຼືອ 2 ຕົວເລກ. ເບີແມ່ນແຕ່ 0 ຫາ 99, ກະລຸນາແກ້ໄຂກ່ອນສົ່ງ.",
+    a_cut:"ມີຊື່ ຫຼື ເບີທີ່ຍາວເກີນ ຖືກຕັດອອກ: ກະລຸນາກວດກ່ອນສົ່ງ.",
+    e_telTypo:"ກະລຸນາກວດອີເມວ: ທ່ານໝາຍເຖິງ {v} ບໍ?", useThis:"ແກ້ໄຂ", a_telTypo:"ກະລຸນາກວດອີເມວຂອງທ່ານ.",
+    qrSave:"ບັນທຶກ QR code",
+    payQrPhone:"ໃນໂທລະສັບ: ບັນທຶກ QR code, ເປີດແອັບທະນາຄານ, ກົດ “ສະແກນ” ແລ້ວເລືອກຮູບຈາກຄັງຮູບ. ໃສ່ຈຳນວນເງິນ: {amount}, ແລະ ຂຽນ {ref} ໃນຄຳອະທິບາຍ.",
+    e_pick:"ໝາຍເອົາເສື້ອ ຫຼື ໂສ້ງ ຢ່າງໜ້ອຍໜຶ່ງຢ່າງ.",
+    e_jColor:"ເລືອກສີເສື້ອ.", e_jSize:"ເລືອກຂະໜາດເສື້ອ.",
+    e_name:"ໃສ່ຊື່ທີ່ຈະພິມຫຼັງເສື້ອ.", e_number:"ໃສ່ເບີ (ຕົວເລກເທົ່ານັ້ນ).",
+    e_nameLong:"ຊື່ມີ {n} ຕົວອັກສອນ: ສູງສຸດ 12. ກະລຸນາຫຍໍ້ໃຫ້ສັ້ນລົງ.", e_numberLong:"ເບີມີ {n} ຕົວເລກ: ສູງສຸດ 2.",
+    a_nameLong:"ຊື່ຫຼັງເສື້ອຍາວໄດ້ສູງສຸດ 12 ຕົວອັກສອນ (ລວມຍະຫວ່າງ).", a_numberLong:"ເບີມີໄດ້ສູງສຸດ 2 ຕົວເລກ.",
+    e_sColor:"ເລືອກສີໂສ້ງ.", e_sSize:"ເລືອກຂະໜາດໂສ້ງ.",
+    e_pay:"ເລືອກວິທີຈ່າຍເງິນ.",
+    e_fix:"ຂໍ້ມູນບໍ່ຄົບ. ກະລຸນາແກ້ໄຂຊ່ອງທີ່ເປັນສີແດງ.",
+    e_net:"ບໍ່ສາມາດສົ່ງຄຳສັ່ງຊື້ໄດ້. ກວດການເຊື່ອມຕໍ່ ແລ້ວລອງໃໝ່.",
+    e_closed:"ການສັ່ງຊື້ຫາກໍປິດ. ຄຳສັ່ງຊື້ຂອງທ່ານບໍ່ໄດ້ຖືກບັນທຶກ.",
+    e_preview:"ນີ້ແມ່ນຕົວຢ່າງໃນເຄື່ອງ: ຄຳສັ່ງຊື້ບໍ່ໄດ້ຖືກບັນທຶກ. ກະລຸນາໃຊ້ລິ້ງເວັບໄຊທີ່ເຜີຍແຜ່.",
+    doneTitle:"ບັນທຶກຄຳສັ່ງຊື້ແລ້ວ", doneThanks:"ຂອບໃຈ {name}! ເລກຄຳສັ່ງຊື້ຂອງທ່ານ:",
+    doneKeep:"ເກັບເລກນີ້ໄວ້: ຈະຕ້ອງໃຊ້ຕອນຈ່າຍເງິນ ແລະ ຕອນມາຮັບເຄື່ອງ.",
+    payTitle:"ການຈ່າຍເງິນ", payAmount:"ຈຳນວນເງິນທີ່ຕ້ອງຈ່າຍ", payRef:"ເລກອ້າງອີງ",
+    payQrHow:"ສະແກນ QR code ນີ້ດ້ວຍແອັບທະນາຄານລາວໃດກໍໄດ້ (LAO QR / LAPNet, ລວມທັງ BCEL One), ຫຼື ຈ່າຍຜ່ານ BCEL OnePay ໄປທີ່ເບີຂ້າງລຸ່ມ. ໃສ່ເລກຄຳສັ່ງຊື້ໃນຂໍ້ຄວາມການໂອນ.",
+    payBank:"ທະນາຄານ", payName:"ຊື່ບັນຊີ", payNumber:"ເລກບັນຊີ", payPhone:"BCEL OnePay (ເບີໂທ)", payWhere:"ສະຖານທີ່ຈ່າຍ",
+    payCashHow:"ຈ່າຍເງິນສົດ ໂດຍບອກເລກຄຳສັ່ງຊື້ຂອງທ່ານ.",
+    payLater:"ຂໍ້ມູນການຈ່າຍເງິນຈະສົ່ງໃຫ້ທ່ານທັນທີທີ່ກຳນົດລາຄາແລ້ວ.",
+    newOrder:"ສັ່ງຊື້ອີກ",
+    closedTitle:"ປິດຮັບຄຳສັ່ງຊື້ແລ້ວ", closedBody:"ຕອນນີ້ຍັງບໍ່ເປີດຮັບຄຳສັ່ງຊື້ຊຸດກິລາ. ກະລຸນາກັບມາໃໝ່ພາຍຫຼັງ.",
+    footerNote:"ຮູບແບບເສື້ອທາງການ. ສີຕົວຈິງອາດຕ່າງກັນເລັກນ້ອຍ.",
+    lineJersey:"ເສື້ອ", lineShorts:"ໂສ້ງ", altFront:"ເສື້ອສີ{c}, ດ້ານໜ້າ", altBack:"ເສື້ອສີ{c}, ດ້ານຫຼັງ"
   },
   en: {
     previewBanner:"Local preview: orders placed here are NOT saved. Use the published link to the site.",
@@ -586,11 +711,19 @@ var T = {
     payHow:"How will you pay?", payQr:"LAO QR / BCEL OnePay", payCash:"Cash at school",
     e_buyer:"Enter the name of the person ordering.",
     telLabel:"Phone / WhatsApp or email", telPh:"e.g. 020 12 34 56 78 or name@email.com",
-    telHelp:"So we can contact you about your order.",
+    telHelp:"Only used to contact you about your order, never shared.",
     e_tel:"Enter a phone number (at least 8 digits) or a valid email address.",
     refImportant:"Important: write your order number in the payment description.",
     refImportantCash:"Important: give your order number when you pay.",
     copy:"Copy", copied:"Copied ✓",
+    deadline:"Orders until {d}",
+    waBtn:"Send my order on WhatsApp", waHelp:"You keep a copy in the chat, and the team is notified.",
+    waHello:"Hello, here is my Hoffet Olympique order:", waContact:"Contact",
+    trackTitle:"Track my order", trackIntro:"Enter your order number and the phone or email you gave when ordering.",
+    trackRef:"Order number", trackContact:"Phone or email", trackBtn:"Check status", trackLoading:"Searching…",
+    trackNotFound:"No order found with this number and contact.", trackFill:"Enter the order number (e.g. HO-0001) and your phone or email.",
+    trackItems:"{n} item(s)", trackLink:"Track this order",
+    st_received:"Order received", st_paid:"Payment received", st_ready:"Ready for pickup", st_done:"Handed over",
     e_nameCut:"“{v}” has {n} characters: cut to 12. Shorten the name yourself (e.g. initial + surname) before sending.",
     e_numberCut:"“{v}”: cut to 2 digits. Numbers go from 0 to 99, please fix it before sending.",
     a_cut:"A name or number that was too long has been cut: check it before sending.",
@@ -624,7 +757,7 @@ var T = {
 
 /* ================= State ================= */
 var lang = "fr";
-try { var saved = localStorage.getItem("ho-lang"); if (saved === "en" || saved === "fr") lang = saved; else if ((navigator.language||"").slice(0,2) === "en") lang = "en"; } catch(e) {}
+try { var saved = localStorage.getItem("ho-lang"); if (saved === "en" || saved === "fr" || saved === "lo") lang = saved; else if ((navigator.language||"").slice(0,2) === "en") lang = "en"; else if ((navigator.language||"").slice(0,2) === "lo") lang = "lo"; } catch(e) {}
 var config = { open:true, jersey:null, shorts:null, currency:"", pay:{ bank:"", accountName:"", accountNumber:"", cash:"" }, contact:{} };
 var ICONS = {
   phone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>',
@@ -658,6 +791,35 @@ function renderNews(){
   });
   $("#news").hidden = !host.children.length;
 }
+/* ---------- order tracking (order number + phone/email given when ordering) ---------- */
+var lastTrack = null;
+function prefillTrack(d, force){
+  if (!d) return;
+  if (force || !$("#track-ref").value) $("#track-ref").value = d.ref || "";
+  if (force || !$("#track-contact").value) $("#track-contact").value = d.contact || "";
+}
+function renderTrack(res){
+  lastTrack = res; var out = $("#track-result"); out.innerHTML = "";
+  if (!res) return;
+  if (!res.ok){ out.appendChild(el("p", {"class":"track-msg", text: t(res.code === "busy" ? "e_busy" : res.code === "net" ? "e_net" : res.code === "fill" ? "trackFill" : "trackNotFound")})); return; }
+  var order = ["received", "paid", "ready", "done"], k = order.indexOf(res.status);
+  out.appendChild(el("p", {"class":"track-head"}, [el("b", {text: res.ref}), document.createTextNode(" · " + t("trackItems").replace("{n}", res.items))]));
+  out.appendChild(el("ol", {"class":"steps"}, order.map(function(st, i){
+    return el("li", {"class": i < k ? "on" : i === k ? "on now" : "", "aria-current": i === k ? "step" : null, text: t("st_" + st)});
+  })));
+}
+$("#track-form").addEventListener("submit", function(ev){
+  ev.preventDefault();
+  var ref = $("#track-ref").value.trim().toUpperCase().replace(/\s+/g, ""), c = $("#track-contact").value.trim();
+  if (/^\d{1,4}$/.test(ref)) ref = "HO-" + ("000" + ref).slice(-4);
+  else if (/^HO-?\d{1,4}$/.test(ref)) ref = "HO-" + ("000" + ref.replace(/\D/g, "")).slice(-4);
+  $("#track-ref").value = ref;
+  if (!/^HO-\d{4}$/.test(ref) || !c){ renderTrack({ok:false, code:"fill"}); return; }
+  var btn = $("#track-btn"); btn.disabled = true; btn.textContent = t("trackLoading");
+  var done = function(){ btn.disabled = false; btn.textContent = t("trackBtn"); };
+  callServer("getStatus", {ref:ref, contact:c}, function(res){ done(); renderTrack(res || {ok:false}); }, function(){ done(); renderTrack({ok:false, code:"net"}); });
+});
+
 /* Contact details come from the Réglages sheet (Contact - téléphone / email / Instagram). */
 function renderContact(){
   var c = config.contact || {}, host = $("#contact-list"), links = [];
@@ -735,7 +897,7 @@ function clearDraft(){ try { localStorage.removeItem("ho-draft"); } catch(e) {} 
   } catch(e) {}
 })();
 
-function t(k){ return T[lang][k]; }
+function t(k){ return T[lang][k] !== undefined ? T[lang][k] : T.fr[k]; }
 function $(s, r){ return (r||document).querySelector(s); }
 function el(tag, attrs, kids){
   var n = document.createElement(tag);
@@ -759,7 +921,15 @@ function renderPrices(){
     host.appendChild(el("span", {"class":"price-chip"}, [document.createTextNode(t(x[0])), el("b", {text: fmtMoney(x[1])})]));
   });
   host.hidden = !host.children.length;
+  // closing date set in the sheet ("Date de fermeture")
+  var dl = $("#deadline"), m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(config.closes || "");
+  dl.hidden = !(m && config.open);
+  if (m) dl.textContent = t("deadline").replace("{d}", lang === "lo"
+    ? (+m[3]) + " " + LAO_MONTHS[+m[2] - 1] + " " + m[1]          // many browsers have no Lao date names
+    : new Date(+m[1], +m[2] - 1, +m[3]).toLocaleDateString(LOCALES[lang], {day:"numeric", month:"long", year:"numeric"}));
 }
+var LOCALES = {fr:"fr-FR", en:"en-GB"};
+var LAO_MONTHS = ["ມັງກອນ","ກຸມພາ","ມີນາ","ເມສາ","ພຶດສະພາ","ມິຖຸນາ","ກໍລະກົດ","ສິງຫາ","ກັນຍາ","ຕຸລາ","ພະຈິກ","ທັນວາ"];
 function hasPrices(){ return config.jersey !== null || config.shorts !== null; }
 function itemPrice(it){ return (it.jersey ? (config.jersey||0) : 0) + (it.shorts ? (config.shorts||0) : 0); }
 function payOptions(){
@@ -775,16 +945,16 @@ function applyLang(){
   document.documentElement.lang = lang;
   document.querySelectorAll("[data-i18n]").forEach(function(n){ n.textContent = t(n.getAttribute("data-i18n")); });
   document.querySelectorAll("[data-i18n-ph]").forEach(function(n){ n.placeholder = t(n.getAttribute("data-i18n-ph")); });
-  $("#lang-fr").setAttribute("aria-pressed", String(lang === "fr"));
-  $("#lang-en").setAttribute("aria-pressed", String(lang === "en"));
+  ["fr", "en", "lo"].forEach(function(l){ $("#lang-" + l).setAttribute("aria-pressed", String(lang === l)); });
   if (TOUCH){ $("#stage-hint").textContent = t("hintTouch"); $(".lb-hint").textContent = t("lbHintTouch"); }
   $("#mini").setAttribute("aria-label", t("view"));
   renderItems(); renderRecap(); renderPay(); renderViewer(); drawPrint(); renderNews(); renderPrices();
   if (state.submitted) renderDone(lastDone);
   if (!$("#form-alert").hidden) showAlert(alertKey);
   showLastOrder();
+  renderTrack(lastTrack);
 }
-["#lang-fr","#lang-en"].forEach(function(id){
+["#lang-fr","#lang-en","#lang-lo"].forEach(function(id){
   $(id).addEventListener("click", function(){ lang = this.getAttribute("data-lang"); try{ localStorage.setItem("ho-lang", lang); }catch(e){} applyLang(); });
 });
 
@@ -1409,6 +1579,7 @@ $("#order-form").addEventListener("submit", function(ev){
     website: $("#hp-web").value,
     buyer: state.buyer.trim(),
     contact: state.tel.trim(),
+    lang: lang,
     payMethod: payOptions().length ? state.payMethod : "",
     items: state.items.map(function(it){
       return { jersey:it.jersey, shorts:it.shorts,
@@ -1433,7 +1604,7 @@ $("#order-form").addEventListener("submit", function(ev){
     }
     finish();
     if (res && res.ok){
-      lastDone = { ref: res.ref, buyer: payload.buyer, payMethod: payload.payMethod, items: JSON.parse(JSON.stringify(state.items)) };
+      lastDone = { ref: res.ref, buyer: payload.buyer, contact: payload.contact, payMethod: payload.payMethod, items: JSON.parse(JSON.stringify(state.items)) };
       state.submitted = true; state.orderKey = null;
       try { localStorage.setItem("ho-last", JSON.stringify(lastDone)); } catch(e) {}
       clearDraft();
@@ -1496,7 +1667,27 @@ function renderDone(d){
   } else {
     host.appendChild(el("p", {text: t("payLater")}));
   }
+  // copy of the order on WhatsApp (to the number set in the sheet) + link to follow it
+  var wa = waLink(d);
+  if (wa) host.appendChild(el("div", {"class":"wa"}, [
+    el("a", {"class":"wa-btn", href: wa, target:"_blank", rel:"noopener"}, [svgIcon(WA_ICON), document.createTextNode(t("waBtn"))]),
+    el("p", {text: t("waHelp")})
+  ]));
+  host.appendChild(el("p", {"class":"track-link"}, [el("a", {href:"#track", text:t("trackLink"), onclick:function(){ prefillTrack(d, true); }})]));
   $("#done").scrollIntoView({behavior:"smooth", block:"start"});
+}
+var WA_ICON = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2.2a9.7 9.7 0 0 0-8.4 14.6L2.3 21.7l5-1.3A9.7 9.7 0 1 0 12 2.2zm0 17.7a8 8 0 0 1-4.1-1.1l-.3-.2-3 .8.8-2.9-.2-.3A8 8 0 1 1 12 19.9zm4.4-6c-.2-.1-1.4-.7-1.7-.8-.2-.1-.4-.1-.5.1l-.8 1c-.1.2-.3.2-.5.1a6.6 6.6 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.5-.4h-.5a.9.9 0 0 0-.7.3 2.8 2.8 0 0 0-.9 2.1 4.9 4.9 0 0 0 1 2.6 11.2 11.2 0 0 0 4.3 3.8c1.6.7 2.2.7 3 .6.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1l-.5-.3z"/></svg>';
+function svgIcon(html){ var sp = el("span", {"class":"ico"}); sp.innerHTML = html; return sp; }
+function waLink(d){
+  var n = String(config.whatsapp || "").replace(/\D/g, "");
+  if (n.length < 8) return "";
+  if (n.charAt(0) === "0") n = "856" + n.slice(1);   // 020 ... -> +856 20 ...
+  var lines = [t("waHello"), d.ref + " — " + d.buyer];
+  (d.items || []).forEach(function(it){ itemLines(it).forEach(function(l){ lines.push("• " + l.what); }); });
+  if (hasPrices()) lines.push(t("total") + " : " + fmtMoney(orderTotal(d.items)));
+  if (d.payMethod) lines.push(t("payTitle") + " : " + (d.payMethod === "qr" ? t("payQr") : t("payCash")));
+  if (d.contact) lines.push(t("waContact") + " : " + d.contact);
+  return "https://wa.me/" + n + "?text=" + encodeURIComponent(lines.join("\n"));
 }
 $("#new-order").addEventListener("click", function(){
   state = { buyer:"", tel:"", items:[newItem()], active:0, submitted:false, sending:false, payMethod:"" };
@@ -1519,11 +1710,12 @@ function callServer(fn, arg, ok, fail){
   } else if (REMOTE){
     var req = fn === "getConfig"
       ? fetch(API_URL + "?action=config", {cache:"no-store"})
-      : fetch(API_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify(arg)});
+      : fetch(API_URL, {method:"POST", headers:{"Content-Type":"text/plain;charset=utf-8"}, body: JSON.stringify(fn === "getStatus" ? Object.assign({action:"status"}, arg) : arg)});
     req.then(function(r){ if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); }).then(ok, fail);
   } else if (DEMO){
     setTimeout(function(){
-      if (fn === "getConfig") ok({open:true, jersey:null, shorts:null, currency:"LAK", pay:{bank:"LDB Bank (LAO QR / LAPNet)", accountName:"SIMON MAUDCE DOUSSANTOUSE", accountNumber:"", phone:"58953850", cash:""}});
+      if (fn === "getStatus") ok({ok:true, ref:arg.ref, status:"paid", items:1});
+      else if (fn === "getConfig") ok({open:true, jersey:null, shorts:null, currency:"LAK", pay:{bank:"LDB Bank (LAO QR / LAPNet)", accountName:"SIMON MAUDCE DOUSSANTOUSE", accountNumber:"", phone:"58953850", cash:""}});
       else ok({ok:true, ref:"HO-0001"});
     }, 300);
   }
@@ -1559,6 +1751,7 @@ function showLastOrder(){
   var txt = t("lastOrder").split("{ref}");
   $("#last-order-text").append(txt[0], el("b", {text:d.ref}), txt[1] || "");
   box.hidden = false;
+  prefillTrack(d, false);
 }
 $("#last-order-btn").addEventListener("click", function(){
   var d = savedOrder(); if (!d) return;
