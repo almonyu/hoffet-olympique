@@ -210,6 +210,17 @@ main .wrap{padding-block:32px 72px}
 .pending-price{font-size:13px;color:var(--muted);margin-top:12px}
 .pay-choice{margin-top:20px}
 @media (max-width:460px){#pay-options{display:grid;grid-template-columns:1fr;gap:8px}#pay-options .sw span{width:100%;justify-content:center}}
+.news{margin:0 0 26px}
+.news h2{margin:0 0 10px;font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+#news-list{display:grid;gap:10px}
+.news-item{border:1px solid var(--line);border-left:3px solid var(--navy);border-radius:var(--r);background:var(--field);padding:12px 16px;min-width:0}
+.news-item.imp{border-color:#efc9c8;border-left-color:var(--red);background:#fdf6f6}
+.news-top{display:flex;align-items:baseline;gap:8px 12px;flex-wrap:wrap}
+.news-item h3{margin:0;font-size:15px;font-weight:600;color:var(--ink);overflow-wrap:anywhere}
+.news-date{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+.news-badge{font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#fff;background:var(--red);border-radius:4px;padding:2px 6px}
+.news-item p{margin:4px 0 0;font-size:14px;line-height:1.5;white-space:pre-line;overflow-wrap:anywhere;color:var(--ink)}
+.news-item p a{color:var(--navy);text-decoration:underline}
 .contact{border-top:1px solid var(--line);padding:34px 0 30px;text-align:center}
 .contact h2{margin:0 0 16px;font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .contact-list{display:flex;justify-content:center;flex-wrap:wrap;gap:10px}
@@ -303,6 +314,10 @@ footer .wrap{padding-block:18px;display:flex;justify-content:space-between;gap:1
 
 <main>
   <div class="wrap">
+    <section class="news" id="news" hidden aria-labelledby="h-news">
+      <h2 id="h-news" data-i18n="newsTitle"></h2>
+      <div id="news-list"></div>
+    </section>
     <div class="layout">
 
       <section class="viewer" id="viewer" aria-label="Maillots">
@@ -467,6 +482,7 @@ var T = {
     pink:"Rose", black:"Noir", front:"Face", back:"Dos", zoom:"Zoom détails", close:"Fermer",
     hint:"Survolez pour la loupe · cliquez pour zoomer", turn:"Retourner",
     contactTitle:"Nous contacter",
+    newsTitle:"Infos", newsImportant:"Important",
     hintTouch:"Touchez le maillot pour le voir en grand", lbHintTouch:"Pincez pour zoomer · touchez deux fois pour agrandir",
     lastOrder:"Votre dernière commande : {ref}", lastOrderBtn:"Revoir la confirmation",
     e_nameChars:"Utilisez uniquement des lettres latines (A–Z), des espaces, des tirets ou des apostrophes.", a_nameChars:"Le nom au dos doit être écrit en lettres latines (A–Z).",
@@ -526,6 +542,7 @@ var T = {
     pink:"Pink", black:"Black", front:"Front", back:"Back", zoom:"Zoom on details", close:"Close",
     hint:"Hover for the magnifier · click to zoom", turn:"Turn",
     contactTitle:"Contact us",
+    newsTitle:"News", newsImportant:"Important",
     hintTouch:"Tap the jersey to see it full screen", lbHintTouch:"Pinch to zoom · double-tap to enlarge",
     lastOrder:"Your last order: {ref}", lastOrderBtn:"See the confirmation again",
     e_nameChars:"Use Latin letters only (A–Z), spaces, hyphens or apostrophes.", a_nameChars:"The name on the back must be written in Latin letters (A–Z).",
@@ -589,6 +606,33 @@ var ICONS = {
   email:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2"/><path d="m3 6 9 7 9-7"/></svg>',
   instagram:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.6" cy="6.4" r="1" fill="currentColor" stroke="none"/></svg>'
 };
+/* News come from the Infos tab of the sheet (rows with "Afficher" ticked). Links in the text become clickable. */
+function linkify(text){
+  var frag = document.createDocumentFragment(), re = /\bhttps?:\/\/[^\s<>"]+[^\s<>".,;:!?)\]]/g, last = 0, m;
+  while ((m = re.exec(text))){
+    frag.appendChild(document.createTextNode(text.slice(last, m.index)));
+    frag.appendChild(el("a", {href:m[0], target:"_blank", rel:"noopener noreferrer", text:m[0]}));
+    last = m.index + m[0].length;
+  }
+  frag.appendChild(document.createTextNode(text.slice(last)));
+  return frag;
+}
+function renderNews(){
+  var list = Array.isArray(config.news) ? config.news.slice(0, 10) : [], host = $("#news-list");
+  host.textContent = "";
+  list.forEach(function(n){
+    if (!n || (!n.title && !n.text)) return;
+    var top = el("div", {"class":"news-top"}, [
+      n.important ? el("span", {"class":"news-badge", text:t("newsImportant")}) : null,
+      n.title ? el("h3", {text:String(n.title)}) : null,
+      n.date ? el("span", {"class":"news-date", text:String(n.date)}) : null
+    ]);
+    var body = null;
+    if (n.text){ body = el("p"); body.appendChild(linkify(String(n.text))); }
+    host.appendChild(el("article", {"class":"news-item" + (n.important ? " imp" : "")}, [top, body]));
+  });
+  $("#news").hidden = !host.children.length;
+}
 /* Contact details come from the Réglages sheet (Contact - téléphone / email / Instagram). */
 function renderContact(){
   var c = config.contact || {}, host = $("#contact-list"), links = [];
@@ -662,7 +706,7 @@ function applyLang(){
   $("#lang-en").setAttribute("aria-pressed", String(lang === "en"));
   if (TOUCH){ $("#stage-hint").textContent = t("hintTouch"); $(".lb-hint").textContent = t("lbHintTouch"); }
   $("#mini").setAttribute("aria-label", t("view"));
-  renderItems(); renderRecap(); renderPay(); renderViewer(); drawPrint();
+  renderItems(); renderRecap(); renderPay(); renderViewer(); drawPrint(); renderNews();
   if (state.submitted) renderDone(lastDone);
   showLastOrder();
 }
@@ -1362,7 +1406,7 @@ function callServer(fn, arg, ok, fail){
   }
 }
 callServer("getConfig", null, function(c){
-  if (c && typeof c === "object"){ config = c; if (!config.pay) config.pay = {}; if (!config.contact) config.contact = {}; applyOpen(); renderRecap(); renderPay(); renderContact(); }
+  if (c && typeof c === "object"){ config = c; if (!config.pay) config.pay = {}; if (!config.contact) config.contact = {}; applyOpen(); renderRecap(); renderPay(); renderContact(); renderNews(); }
 }, function(){});
 
 /* ================= Phone extras: mini preview + last order ================= */
