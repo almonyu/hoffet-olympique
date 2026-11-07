@@ -124,10 +124,10 @@ main .wrap{padding-block:32px 72px}
   .lb-hint.gone{opacity:0}
 }
 /* phones: small live preview that follows you down the form */
-.mini{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:10px;z-index:40;width:72px;height:82px;padding:3px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 8px 24px rgba(24,33,44,.16);cursor:pointer;opacity:0;transform:translateY(-10px) scale(.94);transition:opacity .25s,transform .25s;pointer-events:none}
+.mini{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));right:10px;z-index:40;width:104px;height:118px;padding:4px;border:1px solid var(--line);border-radius:12px;background:#fff;box-shadow:0 8px 24px rgba(24,33,44,.16);cursor:pointer;opacity:0;transform:translateY(-10px) scale(.94);transition:opacity .25s,transform .25s;pointer-events:none}
 .mini.show{opacity:1;transform:none;pointer-events:auto}
 .mini img{width:100%;height:100%;object-fit:contain;display:block}
-.mini-tag{position:absolute;left:50%;bottom:-9px;transform:translateX(-50%);background:var(--navy);color:#fff;font-size:9.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:999px;white-space:nowrap}
+.mini-tag{position:absolute;left:50%;bottom:-10px;transform:translateX(-50%);background:var(--navy);color:#fff;font-size:10.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:2px 7px;border-radius:999px;white-space:nowrap}
 @media (min-width:921px){.mini{display:none}}
 .mini-on .item .link.only-mobile{visibility:hidden}
 
@@ -147,7 +147,9 @@ main .wrap{padding-block:32px 72px}
 .input.kit{font-family:var(--f-kit);font-weight:500;letter-spacing:.05em;text-transform:uppercase;font-size:17px}
 .field{min-width:0}
 .field + .field{margin-top:18px}
-.help{font-size:12.5px;color:var(--muted);margin-top:6px}
+.help{font-size:12.5px;color:var(--muted);margin-top:6px;display:flex;justify-content:space-between;gap:10px}
+.help .count{flex:none;font-variant-numeric:tabular-nums}
+.help .count.full{color:var(--navy);font-weight:600}
 .err{font-size:12.5px;color:var(--err);font-weight:500;margin-top:6px}
 .invalid .input{border-color:var(--err)}
 .invalid .swatches,.invalid .sizes,.invalid .picks{box-shadow:0 0 0 1px var(--err);border-radius:7px}
@@ -208,6 +210,14 @@ main .wrap{padding-block:32px 72px}
 .pending-price{font-size:13px;color:var(--muted);margin-top:12px}
 .pay-choice{margin-top:20px}
 @media (max-width:460px){#pay-options{display:grid;grid-template-columns:1fr;gap:8px}#pay-options .sw span{width:100%;justify-content:center}}
+.contact{border-top:1px solid var(--line);padding:34px 0 30px;text-align:center}
+.contact h2{margin:0 0 16px;font-size:12.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.contact-list{display:flex;justify-content:center;flex-wrap:wrap;gap:10px}
+.contact-list a{display:inline-flex;align-items:center;gap:10px;border:1px solid var(--line-strong);border-radius:999px;padding:9px 18px 9px 10px;color:var(--ink);text-decoration:none;font-weight:500;font-size:14px;background:#fff;transition:border-color .15s,color .15s}
+.contact-list a:hover{border-color:var(--navy);color:var(--navy)}
+.contact-list .ico{width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;flex:none}
+.contact-list .ico svg{width:15px;height:15px}
+@media (max-width:460px){.contact-list{flex-direction:column;align-items:stretch}.contact-list a{justify-content:flex-start}}
 .hp{position:absolute!important;left:-10000px!important;width:1px;height:1px;overflow:hidden}
 .last-order{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px;padding:12px 14px;border:1px solid var(--line);border-left:3px solid var(--navy);border-radius:var(--r);background:var(--field);font-size:13.5px}
 .last-order b{font-weight:600;color:var(--navy)}
@@ -374,6 +384,13 @@ footer .wrap{padding-block:18px;display:flex;justify-content:space-between;gap:1
   <div class="lb-hint" data-i18n="lbHint"></div>
 </div>
 
+<section class="contact" id="contact" hidden aria-labelledby="h-contact">
+  <div class="wrap">
+    <h2 id="h-contact" data-i18n="contactTitle"></h2>
+    <div class="contact-list" id="contact-list"></div>
+  </div>
+</section>
+
 <footer>
   <div class="wrap">
     <span>Hoffet Olympique · Lycée Français International de Vientiane – Josué Hoffet</span>
@@ -414,6 +431,7 @@ var T = {
     lead:"Commandez la tenue officielle de l’équipe du Lycée Français International de Vientiane. Choisissez la couleur, la taille, le nom et le numéro, puis envoyez votre commande.",
     pink:"Rose", black:"Noir", front:"Face", back:"Dos", zoom:"Zoom détails", close:"Fermer",
     hint:"Survolez pour la loupe · cliquez pour zoomer", turn:"Retourner",
+    contactTitle:"Nous contacter",
     hintTouch:"Touchez le maillot pour le voir en grand", lbHintTouch:"Pincez pour zoomer · touchez deux fois pour agrandir",
     lastOrder:"Votre dernière commande : {ref}", lastOrderBtn:"Revoir la confirmation",
     e_nameChars:"Utilisez uniquement des lettres latines (A–Z), des espaces, des tirets ou des apostrophes.", a_nameChars:"Le nom au dos doit être écrit en lettres latines (A–Z).",
@@ -427,7 +445,7 @@ var T = {
     step2:"Vos articles", step2Hint:"Un article par tenue. Cochez le maillot, le short ou les deux.",
     item:"Article", remove:"Retirer", view:"Voir le maillot",
     jColor:"Couleur du maillot", jSize:"Taille du maillot", backName:"Nom au dos", backNamePh:"ex. DUPONT",
-    number:"Numéro", numberPh:"ex. 10", numberHelp:"2 chiffres maximum", nameHelp:"12 caractères maximum (espaces compris)",
+    number:"Numéro", numberPh:"ex. 10", numberHelp:"2 chiffres maximum", nameHelp:"12 caractères maximum, espaces compris",
     sColor:"Couleur du short", sSize:"Taille du short",
     colors:{pink:"Rose", black:"Noir", white:"Blanc"},
     add:"+ Ajouter un autre article",
@@ -465,6 +483,7 @@ var T = {
     lead:"Order the official team kit of the Lycée Français International de Vientiane. Pick the color, size, name and number, then send your order.",
     pink:"Pink", black:"Black", front:"Front", back:"Back", zoom:"Zoom on details", close:"Close",
     hint:"Hover for the magnifier · click to zoom", turn:"Turn",
+    contactTitle:"Contact us",
     hintTouch:"Tap the jersey to see it full screen", lbHintTouch:"Pinch to zoom · double-tap to enlarge",
     lastOrder:"Your last order: {ref}", lastOrderBtn:"See the confirmation again",
     e_nameChars:"Use Latin letters only (A–Z), spaces, hyphens or apostrophes.", a_nameChars:"The name on the back must be written in Latin letters (A–Z).",
@@ -515,7 +534,32 @@ var T = {
 /* ================= State ================= */
 var lang = "fr";
 try { var saved = localStorage.getItem("ho-lang"); if (saved === "en" || saved === "fr") lang = saved; else if ((navigator.language||"").slice(0,2) === "en") lang = "en"; } catch(e) {}
-var config = { open:true, jersey:null, shorts:null, currency:"", pay:{ bank:"", accountName:"", accountNumber:"", cash:"" } };
+var config = { open:true, jersey:null, shorts:null, currency:"", pay:{ bank:"", accountName:"", accountNumber:"", cash:"" }, contact:{} };
+var ICONS = {
+  phone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg>',
+  email:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4.5" width="19" height="15" rx="2"/><path d="m3 6 9 7 9-7"/></svg>',
+  instagram:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="2.5" width="19" height="19" rx="5.5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.6" cy="6.4" r="1" fill="currentColor" stroke="none"/></svg>'
+};
+/* Contact details come from the Réglages sheet (Contact - téléphone / email / Instagram). */
+function renderContact(){
+  var c = config.contact || {}, host = $("#contact-list"), links = [];
+  var phone = String(c.phone || "").trim(), email = String(c.email || "").trim(), ig = String(c.instagram || "").trim();
+  if (phone) links.push({ico:"phone", text:phone, href:"tel:" + phone.replace(/[^\d+]/g, "")});
+  if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) links.push({ico:"email", text:email, href:"mailto:" + email});
+  if (ig){
+    var handle = ig.replace(/^https?:\/\/(www\.)?instagram\.com\//i, "").replace(/^@/, "").replace(/[\/?#].*$/, "");
+    if (/^[A-Za-z0-9._]{1,30}$/.test(handle)) links.push({ico:"instagram", text:"@" + handle, href:"https://www.instagram.com/" + handle + "/", ext:true});
+  }
+  host.innerHTML = "";
+  links.forEach(function(l){
+    var a = el("a", {href:l.href}), i = el("span", {"class":"ico"});
+    i.innerHTML = ICONS[l.ico];
+    if (l.ext){ a.target = "_blank"; a.rel = "noopener"; }
+    a.append(i, el("span", {text:l.text}));
+    host.appendChild(a);
+  });
+  $("#contact").hidden = !links.length;
+}
 var uidN = 0;
 function newItem(){ return { id:"i"+(++uidN), jersey:true, shorts:true, jColor:"", jSize:"", name:"", number:"", sColor:"", sSize:"" }; }
 var state = { buyer:"", items:[newItem()], active:0, submitted:false, sending:false, payMethod:"" };
@@ -917,11 +961,16 @@ function radioGroup(kind, it, field, options, colorMap){
   });
   return wrap;
 }
+function setCount(it, key, n, max){
+  var h = document.getElementById("h-" + key + "-" + it.id), c = h && h.querySelector(".count");
+  if (!c) return;
+  c.textContent = n ? n + "/" + max : ""; c.classList.toggle("full", n >= max);
+}
 function fieldBox(it, key, labelText, control, help, forId){
   var f = el("div", {"class":"field", id:"f-" + key + "-" + it.id});
   f.appendChild(forId ? el("label", {"class":"lbl", "for":forId, text:labelText}) : el("span", {"class":"lbl", text:labelText}));
   f.appendChild(control);
-  if (help) f.appendChild(el("div", {"class":"help", text: help}));
+  if (help) f.appendChild(el("div", {"class":"help", id:"h-" + key + "-" + it.id}, [el("span", {text: help}), el("span", {"class":"count"})]));
   f.appendChild(el("div", {"class":"err", id:"e-" + key + "-" + it.id, hidden:true}));
   return f;
 }
@@ -963,16 +1012,16 @@ function renderItems(){
       part.appendChild(fieldBox(it, "jColor", t("jColor"), radioGroup("sw", it, "jColor", ["pink","black"], JC)));
       part.appendChild(fieldBox(it, "jSize", t("jSize"), radioGroup("sz", it, "jSize", SIZES)));
       var nameId = "name-" + it.id, numId = "number-" + it.id;
-      var nameIn = el("input", {"class":"input kit", type:"text", id:nameId, autocomplete:"off", autocapitalize:"characters", spellcheck:"false", placeholder:t("backNamePh")});
+      var nameIn = el("input", {"class":"input kit", type:"text", id:nameId, maxlength:"12", autocomplete:"off", autocapitalize:"characters", spellcheck:"false", placeholder:t("backNamePh")});
       nameIn.value = it.name;
-      nameIn.addEventListener("input", function(){ it.name = nameIn.value; clearErr(it, "name"); renderRecap(); drawPrint(); });
+      nameIn.addEventListener("input", function(){ it.name = nameIn.value; clearErr(it, "name"); setCount(it, "name", nameIn.value.length, 12); renderRecap(); drawPrint(); });
       nameIn.addEventListener("focus", function(){ spinTo("back"); });
-      var numIn = el("input", {"class":"input kit", type:"text", id:numId, inputmode:"numeric", pattern:"[0-9]*", autocomplete:"off", placeholder:t("numberPh")});
+      var numIn = el("input", {"class":"input kit", type:"text", id:numId, maxlength:"2", inputmode:"numeric", pattern:"[0-9]*", autocomplete:"off", placeholder:t("numberPh")});
       numIn.value = it.number;
       numIn.addEventListener("input", function(){
         var clean = numIn.value.replace(/\D+/g, "");
         if (clean !== numIn.value) numIn.value = clean;
-        it.number = clean; clearErr(it, "number"); renderRecap(); drawPrint();
+        it.number = clean; clearErr(it, "number"); setCount(it, "number", clean.length, 2); renderRecap(); drawPrint();
       });
       numIn.addEventListener("focus", function(){ spinTo("back"); });
       var g = el("div", {"class":"grid2", style:"margin-top:18px"}, [
@@ -991,6 +1040,7 @@ function renderItems(){
     }
     host.appendChild(card);
   });
+  state.items.forEach(function(it){ setCount(it, "name", it.name.length, 12); setCount(it, "number", it.number.length, 2); });
   if (lastErrors) showErrors(lastErrors, false);
 }
 function setActive(idx){
@@ -1230,25 +1280,27 @@ function callServer(fn, arg, ok, fail){
   }
 }
 callServer("getConfig", null, function(c){
-  if (c && typeof c === "object"){ config = c; if (!config.pay) config.pay = {}; applyOpen(); renderRecap(); renderPay(); }
+  if (c && typeof c === "object"){ config = c; if (!config.pay) config.pay = {}; if (!config.contact) config.contact = {}; applyOpen(); renderRecap(); renderPay(); renderContact(); }
 }, function(){});
 
 /* ================= Phone extras: mini preview + last order ================= */
 var TOUCH = window.matchMedia("(hover:none), (pointer:coarse)").matches;
-var miniWanted = { stageOut:false, formIn:false };
+var miniWanted = { stageOut:false, formIn:false, recapIn:false };
 function updateMini(){
   var m = $("#mini"); if (!m || !miniWanted) return;
   var img = $("#mini-img"), u = imgUrl(view.color, view.side);
   if (img.getAttribute("src") !== u) img.src = u;
   $("#mini-tag").textContent = t(view.side);
-  var show = miniWanted.stageOut && miniWanted.formIn && $("#lightbox").hidden && !state.submitted && !$("#order-form").hidden;
+  var show = miniWanted.stageOut && miniWanted.formIn && !miniWanted.recapIn && $("#lightbox").hidden && !state.submitted && !$("#order-form").hidden;
   m.classList.toggle("show", show);
   document.body.classList.toggle("mini-on", show);
 }
 $("#mini").addEventListener("click", function(){ openLightbox(); });
 if ("IntersectionObserver" in window){
   new IntersectionObserver(function(es){ miniWanted.stageOut = !es[0].isIntersecting; updateMini(); }, {threshold:0}).observe($("#viewer"));
-  new IntersectionObserver(function(es){ miniWanted.formIn = es[0].isIntersecting; updateMini(); }, {rootMargin:"-30% 0px 0px 0px"}).observe($("#order-form"));
+  // only while the articles (step 2) fill the top of the screen, so it never covers the prices or the send button
+  new IntersectionObserver(function(es){ miniWanted.formIn = es[0].isIntersecting; updateMini(); }, {rootMargin:"0px 0px -84% 0px"}).observe(document.querySelector('section[aria-labelledby="h-items"]'));
+  new IntersectionObserver(function(es){ miniWanted.recapIn = es[0].isIntersecting; updateMini(); }, {rootMargin:"0px 0px -82% 0px"}).observe(document.querySelector('section[aria-labelledby="h-recap"]'));
 }
 function savedOrder(){ try { var d = JSON.parse(localStorage.getItem("ho-last") || "null"); return d && d.ref && d.items ? d : null; } catch(e) { return null; } }
 function showLastOrder(){
