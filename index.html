@@ -217,9 +217,9 @@ main .wrap{padding-block:32px 72px}
 .contact-list a:hover{border-color:var(--navy);color:var(--navy)}
 .contact-list .ico{width:30px;height:30px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;flex:none}
 .contact-list .ico svg{width:15px;height:15px}
-.contact-list .lbl{display:flex;flex-direction:column;align-items:flex-start;text-align:left;line-height:1.25}
-.contact-list .lbl small{font-size:11.5px;font-weight:500;color:var(--muted);letter-spacing:.02em}
-.contact-list a:hover .lbl small{color:inherit}
+.contact-list .ctext{display:flex;flex-direction:column;align-items:flex-start;text-align:left;line-height:1.25}
+.contact-list .ctext small{font-size:11.5px;font-weight:500;color:var(--muted);letter-spacing:.02em}
+.contact-list a:hover .ctext small{color:inherit}
 @media (max-width:460px){.contact-list{flex-direction:column;align-items:stretch}.contact-list a{justify-content:flex-start}}
 .hp{position:absolute!important;left:-10000px!important;width:1px;height:1px;overflow:hidden}
 .last-order{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px;padding:12px 14px;border:1px solid var(--line);border-left:3px solid var(--navy);border-radius:var(--r);background:var(--field);font-size:13.5px}
@@ -238,6 +238,12 @@ main .wrap{padding-block:32px 72px}
 .done .recap{text-align:left;margin:18px 0 6px}
 .paybox{text-align:left;margin:22px 0 4px;border:1px solid var(--line);border-radius:var(--r);padding:18px;background:var(--tint)}
 .paybox h3{margin:0 0 10px;font-size:15px;font-weight:600}
+.refcall{border:2px solid var(--navy);background:#fff;border-radius:var(--r);padding:12px 14px;margin:0 0 14px}
+.refcall p{margin:0!important;font-weight:600;color:var(--navy);font-size:14px}
+.refrow{display:flex;align-items:center;gap:12px;margin-top:8px;flex-wrap:wrap}
+.refbig{font-size:22px;font-weight:700;letter-spacing:.04em;font-variant-numeric:tabular-nums;color:var(--ink)}
+.copy{border:1px solid var(--line-strong);background:#fff;border-radius:6px;padding:6px 12px;font-size:13px;font-weight:500;cursor:pointer}
+.copy:hover{border-color:var(--navy);color:var(--navy)}
 .paybox .amount{font-size:22px;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink)}
 .paybox dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 14px;margin:12px 0 0;font-size:14px}
 .paybox dt{color:var(--muted)}
@@ -344,6 +350,12 @@ footer .wrap{padding-block:18px;display:flex;justify-content:space-between;gap:1
                 <label class="lbl" for="buyer" data-i18n="buyerLabel"></label>
                 <input class="input" id="buyer" name="buyer" type="text" autocomplete="name" data-i18n-ph="buyerPh">
                 <div class="err" id="e-buyer" hidden></div>
+              </div>
+              <div class="field" id="f-tel" style="margin-top:16px">
+                <label class="lbl" for="buyer-tel" data-i18n="telLabel"></label>
+                <input class="input" id="buyer-tel" name="tel" type="text" maxlength="80" autocomplete="tel" data-i18n-ph="telPh">
+                <div class="help" data-i18n="telHelp"></div>
+                <div class="err" id="e-tel" hidden></div>
               </div>
             </section>
 
@@ -477,6 +489,12 @@ var T = {
     total:"Total", pricesSoon:"Les prix seront communiqués prochainement. Les informations de paiement vous seront envoyées à ce moment-là.",
     payHow:"Comment allez-vous payer ?", payQr:"LAO QR / BCEL OnePay", payCash:"Espèces à l’école",
     e_buyer:"Indiquez le nom de la personne qui commande.",
+    telLabel:"Téléphone / WhatsApp ou email", telPh:"ex. 020 12 34 56 78 ou nom@email.com",
+    telHelp:"Pour vous contacter au sujet de votre commande.",
+    e_tel:"Indiquez un numéro de téléphone (8 chiffres minimum) ou une adresse email valide.",
+    refImportant:"Important : écrivez votre numéro de commande dans la description du paiement.",
+    refImportantCash:"Important : donnez votre numéro de commande quand vous payez.",
+    copy:"Copier", copied:"Copié ✓",
     e_pick:"Cochez au moins un maillot ou un short.",
     e_jColor:"Choisissez la couleur du maillot.", e_jSize:"Choisissez la taille du maillot.",
     e_name:"Indiquez le nom à imprimer au dos.", e_number:"Indiquez le numéro (chiffres uniquement).",
@@ -529,6 +547,12 @@ var T = {
     total:"Total", pricesSoon:"Prices will be announced soon. Payment details will be sent to you then.",
     payHow:"How will you pay?", payQr:"LAO QR / BCEL OnePay", payCash:"Cash at school",
     e_buyer:"Enter the name of the person ordering.",
+    telLabel:"Phone / WhatsApp or email", telPh:"e.g. 020 12 34 56 78 or name@email.com",
+    telHelp:"So we can contact you about your order.",
+    e_tel:"Enter a phone number (at least 8 digits) or a valid email address.",
+    refImportant:"Important: write your order number in the payment description.",
+    refImportantCash:"Important: give your order number when you pay.",
+    copy:"Copy", copied:"Copied ✓",
     e_pick:"Tick at least a jersey or shorts.",
     e_jColor:"Choose the jersey color.", e_jSize:"Choose the jersey size.",
     e_name:"Enter the name to print on the back.", e_number:"Enter the number (digits only).",
@@ -570,17 +594,17 @@ function renderContact(){
   [[phone, c.phoneName], [String(c.phone2 || "").trim(), c.phone2Name]].forEach(function(p){
     if (p[0]) links.push({ico:"phone", text:p[0], label:String(p[1] || "").trim().slice(0, 40), href:"tel:" + p[0].replace(/[^\d+]/g, "")});
   });
-  if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) links.push({ico:"email", text:email, href:"mailto:" + email});
+  if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) links.push({ico:"email", text:email, label:String(c.emailName || "").trim().slice(0, 40), href:"mailto:" + email});
   if (ig){
     var handle = ig.replace(/^https?:\/\/(www\.)?instagram\.com\//i, "").replace(/^@/, "").replace(/[\/?#].*$/, "");
-    if (/^[A-Za-z0-9._]{1,30}$/.test(handle)) links.push({ico:"instagram", text:"@" + handle, href:"https://www.instagram.com/" + handle + "/", ext:true});
+    if (/^[A-Za-z0-9._]{1,30}$/.test(handle)) links.push({ico:"instagram", text:"@" + handle, label:String(c.instagramName || "").trim().slice(0, 40), href:"https://www.instagram.com/" + handle + "/", ext:true});
   }
   host.innerHTML = "";
   links.forEach(function(l){
     var a = el("a", {href:l.href}), i = el("span", {"class":"ico"});
     i.innerHTML = ICONS[l.ico];
     if (l.ext){ a.target = "_blank"; a.rel = "noopener"; }
-    var txt = el("span", {"class":"lbl"});
+    var txt = el("span", {"class":"ctext"});
     if (l.label) txt.appendChild(el("small", {text:l.label}));
     txt.appendChild(el("span", {text:l.text}));
     if (l.label) a.setAttribute("aria-label", l.label + " : " + l.text);
@@ -591,7 +615,13 @@ function renderContact(){
 }
 var uidN = 0;
 function newItem(){ return { id:"i"+(++uidN), jersey:true, shorts:true, jColor:"", jSize:"", name:"", number:"", sColor:"", sSize:"" }; }
-var state = { buyer:"", items:[newItem()], active:0, submitted:false, sending:false, payMethod:"" };
+var state = { buyer:"", tel:"", items:[newItem()], active:0, submitted:false, sending:false, payMethod:"" };
+/* buyer contact: a phone number (8+ digits) or an email address */
+function telOk(v){
+  v = String(v || "").trim();
+  if (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)) return true;
+  return /^[\d\s+().\/-]+$/.test(v) && v.replace(/\D/g, "").length >= 8;
+}
 var view = { color:"black", side:"front" };
 var lastErrors = null, lastDone = null;
 
@@ -1087,6 +1117,7 @@ $("#add-item").addEventListener("click", function(){
   if (c) c.scrollIntoView({behavior:"smooth", block:"center"});
 });
 $("#buyer").addEventListener("input", function(){ state.buyer = this.value; clearErr(null, "buyer"); });
+$("#buyer-tel").addEventListener("input", function(){ state.tel = this.value; clearErr(null, "tel"); });
 
 /* ---------- payment choice ---------- */
 function renderPay(){
@@ -1106,6 +1137,7 @@ function renderPay(){
 function validate(){
   var errs = [];
   if (!state.buyer.trim()) errs.push({key:"buyer"});
+  if (!telOk(state.tel)) errs.push({key:"tel"});
   state.items.forEach(function(it){
     if (!it.jersey && !it.shorts) errs.push({it:it, key:"pick"});
     if (it.jersey){
@@ -1216,6 +1248,7 @@ $("#order-form").addEventListener("submit", function(ev){
     key: state.orderKey,
     website: $("#hp-web").value,
     buyer: state.buyer.trim(),
+    contact: state.tel.trim(),
     payMethod: payOptions().length ? state.payMethod : "",
     items: state.items.map(function(it){
       return { jersey:it.jersey, shorts:it.shorts,
@@ -1260,6 +1293,15 @@ function renderDone(d){
       el("h3", {text: t("payTitle")}),
       el("div", {text: t("payAmount")}), el("div", {"class":"amount", text: fmtMoney(orderTotal(d.items))})
     ]);
+    var copyBtn = el("button", {type:"button", "class":"copy", text: t("copy")});
+    copyBtn.addEventListener("click", function(){
+      var done = function(){ copyBtn.textContent = t("copied"); setTimeout(function(){ copyBtn.textContent = t("copy"); }, 1800); };
+      try { navigator.clipboard.writeText(d.ref).then(done, function(){}); } catch (e) {}
+    });
+    box.insertBefore(el("div", {"class":"refcall", role:"note"}, [
+      el("p", {text: t(d.payMethod === "qr" ? "refImportant" : "refImportantCash")}),
+      el("div", {"class":"refrow"}, [el("span", {"class":"refbig", text: d.ref}), copyBtn])
+    ]), box.firstChild.nextSibling);
     var dl = el("dl");
     if (d.payMethod === "qr"){
       if (QR_SRC) box.appendChild(el("img", {"class":"qr", src: QR_SRC, alt:"QR code"}));
@@ -1279,9 +1321,9 @@ function renderDone(d){
   $("#done").scrollIntoView({behavior:"smooth", block:"start"});
 }
 $("#new-order").addEventListener("click", function(){
-  state = { buyer:"", items:[newItem()], active:0, submitted:false, sending:false, payMethod:"" };
+  state = { buyer:"", tel:"", items:[newItem()], active:0, submitted:false, sending:false, payMethod:"" };
   lastDone = null; lastErrors = null;
-  $("#buyer").value = "";
+  $("#buyer").value = ""; $("#buyer-tel").value = "";
   showLastOrder();
   $("#done").hidden = true; $("#order-form").hidden = false;
   renderItems(); renderRecap(); renderPay(); drawPrint();
