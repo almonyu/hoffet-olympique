@@ -1818,6 +1818,18 @@ function showLastOrder(){
   box.hidden = false;
   prefillTrack(d, false);
 }
+// the browser remembers the last order, but it may have been deleted from the sheet since:
+// ask the server once per visit and forget it if the sheet no longer has it (keep it on network / busy errors)
+function checkSavedOrder(){
+  var d = savedOrder(); if (!d || !d.contact || DEMO) return;
+  callServer("getStatus", {ref:d.ref, contact:d.contact}, function(res){
+    if (!res || res.ok || res.code !== "notfound") return;
+    var now = savedOrder(); if (!now || now.ref !== d.ref) return;
+    try { localStorage.removeItem("ho-last"); } catch(e) {}
+    if ($("#track-ref").value === d.ref){ $("#track-ref").value = ""; if ($("#track-contact").value === d.contact) $("#track-contact").value = ""; }
+    if (!state.submitted) showLastOrder();
+  }, function(){});
+}
 $("#last-order-btn").addEventListener("click", function(){
   var d = savedOrder(); if (!d) return;
   lastDone = d; state.submitted = true; renderDone(d); updateMini();
@@ -1828,6 +1840,7 @@ $("#last-order-btn").addEventListener("click", function(){
 $("#preview-banner").hidden = LIVE || REMOTE || DEMO;
 if (restoredDraft){ $("#buyer").value = state.buyer; $("#buyer-tel").value = state.tel; }
 applyLang();
+checkSavedOrder();
 setTimeout(hideHint, 5000);
 Promise.all([preparePhotos(), loadImg(DIGITS_SRC).then(function(i){ DIGIT_IMG = i; })]).then(function(){ composeAll(); renderViewer(); });
 if (document.fonts && document.fonts.ready) document.fonts.ready.then(function(){ fontsReady = true; drawPrint(); });
