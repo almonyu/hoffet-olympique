@@ -997,6 +997,9 @@ function renderPrices(){
 }
 var LOCALES = {fr:"fr-FR", en:"en-GB"};
 var LAO_MONTHS = ["ມັງກອນ","ກຸມພາ","ມີນາ","ເມສາ","ພຶດສະພາ","ມິຖຸນາ","ກໍລະກົດ","ສິງຫາ","ກັນຍາ","ຕຸລາ","ພະຈິກ","ທັນວາ"];
+// colours on sale (Réglages "Maillots proposés" / "Shorts proposés"); an older server sends none -> all
+function jOpts(){ return config.jColors && config.jColors.length ? config.jColors : ["pink","black"]; }
+function sOpts(){ return config.sColors && config.sColors.length ? config.sColors : ["white","black"]; }
 function hasPrices(){ return config.jersey !== null || config.shorts !== null; }
 function itemPrice(it){ return (it.jersey ? (config.jersey||0) : 0) + (it.shorts ? (config.shorts||0) : 0); }
 function payOptions(){
@@ -1090,6 +1093,7 @@ function markSide(){
 function renderViewer(){
   $("#v-pink").setAttribute("aria-pressed", String(view.color === "pink"));
   $("#v-black").setAttribute("aria-pressed", String(view.color === "black"));
+  ["pink","black"].forEach(function(c){ $("#v-" + c).hidden = jOpts().indexOf(c) < 0; });
   var fi = $("#img-front"), bi = $("#img-back"), cn = T[lang].colors[view.color];
   if (fi.getAttribute("src") !== imgUrl(view.color, "front")) fi.src = imgUrl(view.color, "front");
   if (bi.getAttribute("src") !== imgUrl(view.color, "back")) bi.src = imgUrl(view.color, "back");
@@ -1106,6 +1110,7 @@ function renderViewer(){
   }
   th.querySelectorAll(".thumb").forEach(function(btn){
     var c = btn.getAttribute("data-c"), s = btn.getAttribute("data-s"), im = btn.querySelector("img");
+    btn.hidden = jOpts().indexOf(c) < 0;
     var u = imgUrl(c, s); if (im.getAttribute("src") !== u) im.src = u;
     btn.setAttribute("aria-label", (s === "front" ? t("altFront") : t("altBack")).replace("{c}", T[lang].colors[c]));
     btn.querySelector("span").textContent = T[lang].colors[c] + " · " + t(s);
@@ -1427,7 +1432,7 @@ function renderItems(){
 
     if (it.jersey){
       var part = el("div", {"class":"part"}, [el("div", {"class":"part-title", text:t("jersey")})]);
-      part.appendChild(fieldBox(it, "jColor", t("jColor"), radioGroup("sw", it, "jColor", ["pink","black"], JC)));
+      part.appendChild(fieldBox(it, "jColor", t("jColor"), radioGroup("sw", it, "jColor", jOpts(), JC)));
       part.appendChild(fieldBox(it, "jSize", t("jSize"), radioGroup("sz", it, "jSize", SIZES)));
       var nameId = "name-" + it.id, numId = "number-" + it.id;
       var nameIn = el("input", {"class":"input kit", type:"text", id:nameId, autocomplete:"off", autocapitalize:"characters", spellcheck:"false", placeholder:t("backNamePh")});
@@ -1471,7 +1476,7 @@ function renderItems(){
     }
     if (it.shorts){
       var sp = el("div", {"class":"part"}, [el("div", {"class":"part-title", text:t("shorts")})]);
-      sp.appendChild(fieldBox(it, "sColor", t("sColor"), radioGroup("sw", it, "sColor", ["white","black"], SC)));
+      sp.appendChild(fieldBox(it, "sColor", t("sColor"), radioGroup("sw", it, "sColor", sOpts(), SC)));
       sp.appendChild(fieldBox(it, "sSize", t("sSize"), radioGroup("sz", it, "sSize", SIZES)));
       card.appendChild(sp);
     }
@@ -1803,7 +1808,11 @@ function callServer(fn, arg, ok, fail){
   }
 }
 callServer("getConfig", null, function(c){
-  if (c && typeof c === "object"){ config = c; if (!config.pay) config.pay = {}; if (!config.contact) config.contact = {}; applyOpen(); renderRecap(); renderPay(); renderContact(); renderNews(); renderPrices(); renderItems(); }
+  if (c && typeof c === "object"){ config = c; if (!config.pay) config.pay = {}; if (!config.contact) config.contact = {};
+    // a colour taken off sale: drop it from the draft (the buyer picks again) and from the viewer
+    state.items.forEach(function(it){ if (jOpts().indexOf(it.jColor) < 0) it.jColor = ""; if (sOpts().indexOf(it.sColor) < 0) it.sColor = ""; });
+    if (jOpts().indexOf(view.color) < 0) view.color = jOpts()[0];
+    renderViewer(); applyOpen(); renderRecap(); renderPay(); renderContact(); renderNews(); renderPrices(); renderItems(); }
 }, function(){});
 
 /* ================= Phone extras: mini preview + last order ================= */
