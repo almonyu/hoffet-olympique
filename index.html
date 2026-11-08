@@ -156,6 +156,9 @@ main .wrap{padding-block:32px 72px}
 .field + .field{margin-top:18px}
 .help{font-size:12.5px;color:var(--muted);margin-top:6px;display:flex;justify-content:space-between;gap:10px}
 .help .count{flex:none;font-variant-numeric:tabular-nums}
+.nonum{display:flex;align-items:center;gap:8px;margin-top:8px;font-size:13.5px;cursor:pointer;user-select:none;width:fit-content}
+.nonum input{width:18px;height:18px;margin:0;accent-color:var(--navy);cursor:pointer}
+.input:disabled{opacity:.45;cursor:not-allowed}
 .help .count.full{color:var(--navy);font-weight:600}
 .err{font-size:12.5px;color:var(--err);font-weight:500;margin-top:6px}
 .invalid .input{border-color:var(--err)}
@@ -563,7 +566,7 @@ var T = {
     step2:"Vos articles", step2Hint:"Un article par tenue. Cochez le maillot, le short ou les deux.",
     item:"Article", remove:"Retirer", view:"Voir le maillot",
     jColor:"Couleur du maillot", jSize:"Taille du maillot", backName:"Nom au dos", backNamePh:"ex. DUPONT",
-    number:"Numéro", numberPh:"ex. 10", numberHelp:"2 chiffres maximum", nameHelp:"12 caractères maximum, espaces compris",
+    number:"Numéro", numberPh:"ex. 10", numberHelp:"2 chiffres maximum", noNumber:"Pas de numéro (badminton)", noNumberShort:"sans numéro", nameHelp:"12 caractères maximum, espaces compris",
     sColor:"Couleur du short", sSize:"Taille du short",
     colors:{pink:"Rose", black:"Noir", white:"Blanc"},
     add:"+ Ajouter un autre article",
@@ -641,7 +644,7 @@ var T = {
     step2:"ລາຍການຂອງທ່ານ", step2Hint:"ໜຶ່ງລາຍການຕໍ່ໜຶ່ງຊຸດ. ໝາຍເອົາເສື້ອ, ໂສ້ງ ຫຼື ທັງສອງ.",
     item:"ລາຍການ", remove:"ລຶບອອກ", view:"ເບິ່ງເສື້ອ",
     jColor:"ສີເສື້ອ", jSize:"ຂະໜາດເສື້ອ", backName:"ຊື່ຫຼັງເສື້ອ (ອັກສອນລາແຕັງ)", backNamePh:"ຕົວຢ່າງ: SOMPHONE",
-    number:"ເບີ", numberPh:"ຕົວຢ່າງ: 10", numberHelp:"ສູງສຸດ 2 ຕົວເລກ", nameHelp:"ສູງສຸດ 12 ຕົວອັກສອນ (ລວມຍະຫວ່າງ)",
+    number:"ເບີ", numberPh:"ຕົວຢ່າງ: 10", numberHelp:"ສູງສຸດ 2 ຕົວເລກ", noNumber:"ບໍ່ມີເບີ (ແບດມິນຕັນ)", noNumberShort:"ບໍ່ມີເບີ", nameHelp:"ສູງສຸດ 12 ຕົວອັກສອນ (ລວມຍະຫວ່າງ)",
     sColor:"ສີໂສ້ງ", sSize:"ຂະໜາດໂສ້ງ",
     colors:{pink:"ບົວ", black:"ດຳ", white:"ຂາວ"},
     add:"+ ເພີ່ມລາຍການອື່ນ",
@@ -719,7 +722,7 @@ var T = {
     step2:"Your items", step2Hint:"One item per kit. Tick the jersey, the shorts or both.",
     item:"Item", remove:"Remove", view:"See the jersey",
     jColor:"Jersey color", jSize:"Jersey size", backName:"Name on the back", backNamePh:"e.g. DUPONT",
-    number:"Number", numberPh:"e.g. 10", numberHelp:"2 digits maximum", nameHelp:"12 characters maximum (spaces included)",
+    number:"Number", numberPh:"e.g. 10", numberHelp:"2 digits maximum", noNumber:"No number (badminton)", noNumberShort:"no number", nameHelp:"12 characters maximum (spaces included)",
     sColor:"Shorts color", sSize:"Shorts size",
     colors:{pink:"Pink", black:"Black", white:"White"},
     add:"+ Add another item",
@@ -911,7 +914,7 @@ function renderContact(){
   $("#contact").hidden = !links.length;
 }
 var uidN = 0;
-function newItem(){ return { id:"i"+(++uidN), jersey:true, shorts:true, jColor:"", jSize:"", name:"", number:"", sColor:"", sSize:"" }; }
+function newItem(){ return { id:"i"+(++uidN), jersey:true, shorts:true, jColor:"", jSize:"", name:"", number:"", noNumber:false, sColor:"", sSize:"" }; }
 var state = { buyer:"", tel:"", items:[newItem()], active:0, submitted:false, sending:false, payMethod:"" };
 /* buyer contact: a phone number (8+ digits) or an email address */
 function telOk(v){
@@ -950,10 +953,10 @@ function clearDraft(){ try { localStorage.removeItem("ho-draft"); } catch(e) {} 
   try {
     var d = JSON.parse(localStorage.getItem("ho-draft") || "null");
     if (!d || !Array.isArray(d.items) || !d.items.length || !(Date.now() - d.t < 14 * 864e5)) return;
-    var keys = ["jersey","shorts","jColor","jSize","name","number","sColor","sSize","nameCut","numberCut"];
+    var keys = ["jersey","shorts","noNumber","jColor","jSize","name","number","sColor","sSize","nameCut","numberCut"];
     state.items = d.items.slice(0, 60).map(function(x){
       var it = newItem();
-      keys.forEach(function(k){ if (x && typeof x[k] === (k === "jersey" || k === "shorts" ? "boolean" : "string")) it[k] = x[k]; });
+      keys.forEach(function(k){ if (x && typeof x[k] === (k === "jersey" || k === "shorts" || k === "noNumber" ? "boolean" : "string")) it[k] = x[k]; });
       return it;
     });
     state.buyer = String(d.buyer || ""); state.tel = String(d.tel || ""); state.payMethod = String(d.payMethod || "");
@@ -1302,15 +1305,15 @@ function compose(c, s){
   if (!P || !B || !fontsReady) return false;
   var it = state.items[state.active] || {};
   var name = (it.name || "").trim().toUpperCase() || (lang === "fr" ? "NOM" : "NAME");
-  var num = it.number || "10";
+  var num = it.noNumber ? "" : (it.number || "10");
   var key = name + "|" + num + "|" + (DIGIT_IMG ? 1 : 0);
   if (P.composedKey === key && URLS[c][s]) return false;
   var cv = document.createElement("canvas"); cv.width = P.w; cv.height = P.h;
   var x = cv.getContext("2d");
   x.fillStyle = "#fff"; x.fillRect(0, 0, P.w, P.h);
   x.drawImage(P.canvas, 0, 0);
-  if (s === "back"){ if (B[0]) kitName(x, B[0], name); if (B[1]) kitNumber(x, B[1], num, c); }
-  else if (B[0]) kitNumber(x, B[0], num, c);
+  if (s === "back"){ if (B[0]) kitName(x, B[0], name); if (B[1] && num) kitNumber(x, B[1], num, c); }
+  else if (B[0] && num) kitNumber(x, B[0], num, c);
   try { URLS[c][s] = cv.toDataURL("image/jpeg", 0.92); P.composedKey = key; } catch (e) { return false; }
   return true;
 }
@@ -1333,7 +1336,7 @@ function drawPrint(){
   x.fillStyle = C.base; x.fillRect(0, 0, W, H);
   x.fillStyle = x.createPattern(latticeTile(30, C.pat, 1.6), "repeat"); x.fillRect(0, 0, W, H);
   var name = (it.name || "").trim().toUpperCase(), num = it.number || "";
-  var nm = name || (lang === "fr" ? "NOM" : "NAME"), nu = num || "10";
+  var nm = name || (lang === "fr" ? "NOM" : "NAME"), nu = it.noNumber ? "" : (num || "10");
   x.save(); x.globalAlpha = name ? 1 : 0.45;
   x.fillStyle = "#fff"; x.textAlign = "center"; x.textBaseline = "alphabetic";
   x.font = "600 92px Oswald, 'Arial Narrow', sans-serif";
@@ -1447,9 +1450,20 @@ function renderItems(){
         it.number = clean; clearErr(it, "number"); setCount(it, "number", clean.length, 2); showCut(it); renderRecap(); drawPrint();
       });
       numIn.addEventListener("focus", function(){ spinTo("back"); });
+      // badminton players: no number at all (the server only accepts an empty number when this is ticked)
+      var noNum = el("input", {type:"checkbox", id:"nonum-" + it.id});
+      noNum.checked = !!it.noNumber; numIn.disabled = !!it.noNumber;
+      if (it.noNumber) numIn.value = "";
+      noNum.addEventListener("change", function(){
+        it.noNumber = noNum.checked; numIn.disabled = it.noNumber;
+        if (it.noNumber){ it.number = ""; it.numberCut = ""; numIn.value = ""; setCount(it, "number", 0, 2); showCut(it); }
+        clearErr(it, "number"); renderRecap(); drawPrint(); composeAll(); renderViewer(); saveDraft();
+      });
+      var numBox = fieldBox(it, "number", t("number"), numIn, t("numberHelp"), numId);
+      numBox.insertBefore(el("label", {"class":"nonum", "for":"nonum-" + it.id}, [noNum, el("span", {text:t("noNumber")})]), numBox.querySelector(".err"));
       var g = el("div", {"class":"grid2", style:"margin-top:18px"}, [
         fieldBox(it, "name", t("backName"), nameIn, t("nameHelp"), nameId),
-        fieldBox(it, "number", t("number"), numIn, t("numberHelp"), numId)
+        numBox
       ]);
       g.querySelectorAll(".field").forEach(function(f){ f.style.marginTop = "0"; });
       part.appendChild(g);
@@ -1535,7 +1549,8 @@ function validate(){
       else if (!it.name.trim()) errs.push({it:it, key:"name"});
       else if (it.name.trim().length > 12) errs.push({it:it, key:"name", msg:"nameLong", n:it.name.trim().length});
       else if (!NAME_OK.test(it.name.trim())) errs.push({it:it, key:"name", msg:"nameChars"});
-      if (it.numberCut) errs.push({it:it, key:"number", msg:"numberCut", v:it.numberCut});
+      if (it.noNumber){}
+      else if (it.numberCut) errs.push({it:it, key:"number", msg:"numberCut", v:it.numberCut});
       else if (!/^\d+$/.test(it.number)) errs.push({it:it, key:"number"});
       else if (it.number.length > 2) errs.push({it:it, key:"number", msg:"numberLong", n:it.number.length});
     }
@@ -1592,7 +1607,7 @@ function itemLines(it){
     var parts = [t("lineJersey")];
     if (it.jColor) parts.push(T[lang].colors[it.jColor].toLowerCase());
     if (it.jSize) parts.push(it.jSize);
-    var who = [it.name.trim().toUpperCase(), it.number].filter(Boolean).join(" ");
+    var who = [it.name.trim().toUpperCase(), it.noNumber ? "(" + t("noNumberShort") + ")" : it.number].filter(Boolean).join(" ");
     out.push({what: parts.join(" · ") + (who ? " — " + who : ""), price: config.jersey});
   }
   if (it.shorts){
@@ -1648,7 +1663,7 @@ $("#order-form").addEventListener("submit", function(ev){
     items: state.items.map(function(it){
       return { jersey:it.jersey, shorts:it.shorts,
         jColor: it.jersey ? it.jColor : "", jSize: it.jersey ? it.jSize : "",
-        name: it.jersey ? it.name.trim() : "", number: it.jersey ? it.number : "",
+        name: it.jersey ? it.name.trim() : "", number: it.jersey && !it.noNumber ? it.number : "", noNumber: !!(it.jersey && it.noNumber),
         sColor: it.shorts ? it.sColor : "", sSize: it.shorts ? it.sSize : "" };
     })
   };
