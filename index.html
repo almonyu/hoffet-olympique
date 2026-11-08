@@ -831,7 +831,9 @@ function renderTrack(res){
     return el("li", {"class": i < k ? "on" : i === k ? "on now" : "", "aria-current": i === k ? "step" : null, text: t("st_" + st)});
   })));
   // not paid yet: let them send the screenshot of their transfer
-  if (res.status === "received" && hasPrices()){
+  // cash orders: no transfer to prove. The server says res.pay; before its redeploy, fall back on the order saved in this browser
+  var mine = savedOrder(), cash = res.pay ? res.pay === "cash" : !!(mine && mine.ref === res.ref && mine.payMethod === "cash");
+  if (res.status === "received" && hasPrices() && !cash){
     if (res.proof) out.appendChild(el("p", {"class":"proof-msg ok", text: t("proofSeen")}));
     else if (lastTrackContact) out.appendChild(proofBox(res.ref, lastTrackContact));
   }
