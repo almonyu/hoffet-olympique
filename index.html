@@ -40,7 +40,7 @@ img{max-width:100%}
 
 /* ---------- Header ---------- */
 .band{position:relative;background:var(--navy);color:#fff;overflow:hidden}
-.band::before{content:"";position:absolute;inset:0;opacity:.05;background-size:40px 40px;
+.band::before{content:"";position:absolute;inset:0;opacity:.14;background-size:40px 40px;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 40 40'%3E%3Cg fill='none' stroke='%23fff' stroke-width='1'%3E%3Cpath d='M20 1 39 20 20 39 1 20Z'/%3E%3Cpath d='M20 12 28 20 20 28 12 20Z'/%3E%3C/g%3E%3C/svg%3E")}
 .band .wrap{position:relative;padding-block:20px 34px}
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:16px}
@@ -50,7 +50,7 @@ img{max-width:100%}
 .lang button[aria-pressed="true"]{background:#fff;color:var(--navy);font-weight:600}
 .hero{margin-top:30px;max-width:720px}
 .eyebrow{display:flex;align-items:center;gap:12px;font-size:12px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.75)}
-.tricolor{display:inline-flex;height:10px;width:42px;border-radius:2px;overflow:hidden;flex:none}
+.tricolor{display:inline-flex;height:14px;width:56px;border-radius:2px;overflow:hidden;flex:none}
 .tricolor i{flex:1}
 .hero h1{margin:14px 0 0;font-weight:700;font-size:clamp(32px,5.4vw,54px);line-height:1.04;letter-spacing:-.015em;text-wrap:balance}
 .hero h1 span{color:var(--sky)}
@@ -62,7 +62,7 @@ img{max-width:100%}
 @media (max-width:360px){.pick .pick-price{padding-left:0}}
 .hero .deadline{margin-top:12px;font-weight:600;color:#fff;font-size:14px}
 .hero p{margin:14px 0 0;max-width:58ch;color:rgba(255,255,255,.82);font-size:15px}
-.stripe{display:flex;height:4px}
+.stripe{display:flex;height:8px}
 .stripe i{flex:1}
 .c-blue{background:var(--flag-blue)} .c-white{background:#fff} .c-red{background:var(--red)}
 .stripe-wrap{border-bottom:1px solid var(--line)}
@@ -359,6 +359,7 @@ footer .wrap{padding-block:18px;display:flex;justify-content:space-between;gap:1
 .gal-grid{display:grid;grid-template-columns:repeat(2,minmax(0,150px));gap:var(--s3)}
 .gal-item{border:1px solid var(--line);border-radius:var(--r);background:#fff;padding:0;cursor:zoom-in;overflow:hidden;display:grid;text-align:left}
 .gal-item:hover{border-color:var(--navy)}
+.gal-item[aria-pressed="true"]{border-color:var(--navy);box-shadow:inset 0 0 0 1px var(--navy)}
 .gal-item .gal-img{overflow:hidden;aspect-ratio:1032/1013;background:var(--tint)}
 .gal-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 220ms ease}
 @media (hover:hover){.gal-item:hover img{transform:scale(1.04)}}
@@ -998,7 +999,7 @@ function addTypoFix(m, v){
     $("#buyer-tel").value = v; state.tel = v; clearErr(null, "tel"); $("#f-tel").classList.remove("invalid"); $("#e-tel").hidden = true; saveDraft();
   }}));
 }
-var view = { color:"black", side:"front" };
+var view = { color:"black", side:"front", shorts:null };   // shorts: colour of the shorts shown in the big display, or null = the shirt
 var lastErrors = null, lastDone = null;
 /* the form being filled is kept on this device (14 days) so a reload or a closed tab does not lose it */
 var restoredDraft = false;
@@ -1136,27 +1137,30 @@ function preparePhotos(){
   return Promise.all(jobs);
 }
 
-function spinTo(side){ view.side = side; renderViewer(); }
+function spinTo(side){ view.shorts = null; view.side = side; renderViewer(); }
+function shortsUrl(c){ var P = SH[c] || {}; return P.url || (P.img && P.img.src) || ""; }
 function hideHint(){ var h = $("#stage-hint"); if (h.hidden) return; h.classList.add("gone"); setTimeout(function(){ h.hidden = true; }, 700); }
 
 /* ================= Viewer chrome ================= */
 var thumbsBuilt = false;
 function markSide(){
-  $("#v-front").setAttribute("aria-pressed", String(view.side === "front"));
-  $("#v-back").setAttribute("aria-pressed", String(view.side === "back"));
+  $("#v-front").setAttribute("aria-pressed", String(!view.shorts && view.side === "front"));
+  $("#v-back").setAttribute("aria-pressed", String(!view.shorts && view.side === "back"));
   document.querySelectorAll(".thumb").forEach(function(btn){
-    btn.setAttribute("aria-pressed", String(btn.getAttribute("data-c") === view.color && btn.getAttribute("data-s") === view.side));
+    btn.setAttribute("aria-pressed", String(!view.shorts && btn.getAttribute("data-c") === view.color && btn.getAttribute("data-s") === view.side));
   });
 }
 function renderViewer(){
   $("#v-pink").setAttribute("aria-pressed", String(view.color === "pink"));
   $("#v-black").setAttribute("aria-pressed", String(view.color === "black"));
   ["pink","black"].forEach(function(c){ $("#v-" + c).hidden = jOpts().indexOf(c) < 0; });
+  if (view.shorts && (sOpts().indexOf(view.shorts) < 0 || !shortsUrl(view.shorts))) view.shorts = null;
   var fi = $("#img-front"), bi = $("#img-back"), cn = T[lang].colors[view.color];
-  if (fi.getAttribute("src") !== imgUrl(view.color, "front")) fi.src = imgUrl(view.color, "front");
+  var fu = view.shorts ? shortsUrl(view.shorts) : imgUrl(view.color, "front");
+  if (fi.getAttribute("src") !== fu) fi.src = fu;
   if (bi.getAttribute("src") !== imgUrl(view.color, "back")) bi.src = imgUrl(view.color, "back");
-  fi.alt = t("altFront").replace("{c}", cn); bi.alt = t("altBack").replace("{c}", cn);
-  $("#card").classList.toggle("flipped", view.side === "back");
+  fi.alt = view.shorts ? shortsAlt(view.shorts) : t("altFront").replace("{c}", cn); bi.alt = t("altBack").replace("{c}", cn);
+  $("#card").classList.toggle("flipped", !view.shorts && view.side === "back");
   var th = $("#thumbs");
   if (!thumbsBuilt){
     ["pink","black"].forEach(function(c){ ["front","back"].forEach(function(s){
@@ -1178,12 +1182,12 @@ function renderViewer(){
   renderGallery();
   if (!$("#lightbox").hidden) lbShow();
 }
-function setColor(c){ view.color = c; renderViewer(); }
+function setColor(c){ view.shorts = null; view.color = c; renderViewer(); }
 $("#v-pink").addEventListener("click", function(){ setColor("pink"); });
 $("#v-black").addEventListener("click", function(){ setColor("black"); });
 $("#v-front").addEventListener("click", function(){ spinTo("front"); });
 $("#v-back").addEventListener("click", function(){ spinTo("back"); });
-$("#btn-zoom").addEventListener("click", function(){ openLightbox(); });
+$("#btn-zoom").addEventListener("click", function(){ openLightbox(view.shorts); });
 $("#btn-turn").addEventListener("click", function(){ spinTo(view.side === "front" ? "back" : "front"); });
 
 // small magnifier (mouse) + swipe to turn + tap to zoom
@@ -1197,7 +1201,7 @@ $("#btn-turn").addEventListener("click", function(){ spinTo(view.side === "front
     hideHint();
     lens.classList.add("on");
     lens.style.left = ((e.clientX - r.left) / z - RL) + "px"; lens.style.top = ((e.clientY - r.top) / z - RL) + "px";
-    lens.style.backgroundImage = "url(" + imgUrl(view.color, view.side) + ")";
+    lens.style.backgroundImage = "url(" + (view.shorts ? shortsUrl(view.shorts) : imgUrl(view.color, view.side)) + ")";
     lens.style.backgroundSize = (cw * Z) + "px " + (ch * Z) + "px";
     lens.style.backgroundPosition = (-(x * Z - RL)) + "px " + (-(y * Z - RL)) + "px";
   });
@@ -1209,7 +1213,7 @@ $("#btn-turn").addEventListener("click", function(){ spinTo(view.side === "front
     if (sx === null) return;
     var dx = e.clientX - sx, dy = e.clientY - sy; sx = null; hideHint();
     if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)){ spinTo(view.side === "front" ? "back" : "front"); return; }
-    if (!moved) openLightbox();
+    if (!moved) openLightbox(view.shorts);
   });
   stage.addEventListener("pointercancel", function(){ sx = null; });
 })();
@@ -1416,7 +1420,7 @@ function composeShorts(){
     // webp keeps the transparent background (browsers that cannot write webp give png)
     try { P.url = cv.toDataURL("image/webp", 0.92); P.key = num; done = true; } catch (e) {}
   });
-  if (done) renderGallery();
+  if (done) renderViewer();
 }
 function loadShorts(){
   return Promise.all(SLOTS.shorts.map(function(s){ return loadImg(s.src).then(function(img){ SH[s.color] = { img: img }; }); }));
@@ -1426,7 +1430,12 @@ function renderGallery(){
   var grid = $("#gal-grid"), shown = 0;
   if (!grid.children.length) SLOTS.shorts.forEach(function(s){
     var btn = el("button", {type:"button", "class":"gal-item", "data-c":s.color}, [el("div", {"class":"gal-img"}, [el("img", {alt:"", decoding:"async"})]), el("span")]);
-    btn.addEventListener("click", function(){ openLightbox(s.color); });
+    // one click: these shorts take the place of the shirt in the big display
+    btn.addEventListener("click", function(){
+      view.shorts = s.color; renderViewer();
+      var st = $("#stage").getBoundingClientRect();
+      if (st.top < 0 || st.bottom > window.innerHeight) $("#stage").scrollIntoView({behavior:"smooth", block:"center"});
+    });
     grid.appendChild(btn);
   });
   grid.querySelectorAll(".gal-item").forEach(function(btn){
@@ -1434,6 +1443,7 @@ function renderGallery(){
     btn.hidden = !on; if (on) shown++;
     if (P.img){ var u = P.url || P.img.src; if (im.getAttribute("src") !== u) im.src = u; }
     im.alt = shortsAlt(c);
+    btn.setAttribute("aria-pressed", String(view.shorts === c));
     btn.querySelector("span").textContent = shortsAlt(c);
   });
   $("#gallery").hidden = !shown;
@@ -1954,14 +1964,14 @@ var TOUCH = window.matchMedia("(hover:none), (pointer:coarse)").matches;
 var miniWanted = { stageOut:false, formIn:false, recapIn:false };
 function updateMini(){
   var m = $("#mini"); if (!m || !miniWanted) return;
-  var img = $("#mini-img"), u = imgUrl(view.color, view.side);
-  if (img.getAttribute("src") !== u) img.src = u;
-  $("#mini-tag").textContent = t(view.side);
+  var img = $("#mini-img"), u = view.shorts ? shortsUrl(view.shorts) : imgUrl(view.color, view.side);
+  if (u && img.getAttribute("src") !== u) img.src = u;
+  $("#mini-tag").textContent = view.shorts ? t("shorts") : t(view.side);
   var show = miniWanted.stageOut && miniWanted.formIn && !miniWanted.recapIn && $("#lightbox").hidden && !state.submitted && !$("#order-form").hidden;
   m.classList.toggle("show", show);
   document.body.classList.toggle("mini-on", show);
 }
-$("#mini").addEventListener("click", function(){ openLightbox(); });
+$("#mini").addEventListener("click", function(){ openLightbox(view.shorts); });
 if ("IntersectionObserver" in window){
   new IntersectionObserver(function(es){ miniWanted.stageOut = !es[0].isIntersecting; updateMini(); }, {threshold:0}).observe($("#viewer"));
   // only while the articles (step 2) fill the top of the screen, so it never covers the prices or the send button
